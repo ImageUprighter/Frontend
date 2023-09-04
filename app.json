@@ -1,0 +1,9 @@
+{
+  "name": "image_slider",
+  "displayName": "image_slider",
+  "expo": {
+    "android": {
+      "Permissions": ["READ_EXTERNAL_STORAGE"]
+    }
+  }
+}
