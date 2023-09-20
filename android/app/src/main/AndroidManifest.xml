@@ -22,7 +22,11 @@
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
+        android:windowFullscreen="true"
+        android:theme="@style/AppTheme"
+        android:screenOrientation="landscape"
         android:exported="true">
+        
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
