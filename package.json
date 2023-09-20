@@ -10,12 +10,22 @@
     "test": "jest"
   },
   "dependencies": {
+    "@hilma/fileshandler-native": "^0.1.19",
+    "@react-native-async-storage/async-storage": "^1.19.3",
+    "@react-navigation/drawer": "^6.6.3",
+    "@react-navigation/native": "^6.1.7",
+    "expo-camera": "^13.4.3",
+    "expo-file-system": "^15.4.4",
+    "expo-media-library": "~15.4.1",
     "react": "18.2.0",
     "react-native": "0.72.4",
     "react-native-document-picker": "^9.0.1",
     "react-native-file-picker": "^0.0.21",
     "react-native-fs": "^2.20.0",
-    "react-native-permissions": "^3.9.0"
+    "react-native-image-picker": "^5.6.1",
+    "react-native-keep-awake": "^4.0.0",
+    "react-native-permissions": "^3.9.0",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -25,7 +35,9 @@
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
     "@types/react": "^18.0.24",
+    "@types/react-native": "^0.72.2",
     "@types/react-native-fs": "^2.13.0",
+    "@types/react-native-keep-awake": "^2.0.3",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "eslint": "^8.19.0",

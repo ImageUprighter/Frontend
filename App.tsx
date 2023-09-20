@@ -1,142 +1,119 @@
 import { useState, useEffect } from 'react';
-import { Button, SafeAreaView, Text, PermissionsAndroid } from 'react-native';
+import { Button, SafeAreaView, Text, Alert } from 'react-native';
+import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker'; // Import DocumentPickerResponse
+import { PERMISSIONS, request } from 'react-native-permissions';
+import { styles } from './my_style';
+import ImageList from './ImageList';
 import RNFS from 'react-native-fs';
-import DocumentPicker from 'react-native-document-picker';
-import { StoragePermissions, CameraPermissions } from './Permissions'
-import FilePickerManager from 'react-native-file-picker';
-import { styles } from './my_style'
+import KeepAwake from 'react-native-keep-awake';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Entypo } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
 export default function App(): JSX.Element {
-  const [directory, setDirectory] = useState('');
-  const [storageGranted, setStorageGranted] = useState('');
-  const [cameraGranted, setCameraGranted] = useState('');
+  const [selectedFolderUris, setSelectedFolderUris] = useState<string>();
+  const storeKey = '@directory_path'
 
   useEffect(() => {
     (async () => {
-      // setStorageGranted(await StoragePermissions())
-      // setCameraGranted(await CameraPermissions())
-    })()
+      // const storagePermissionStatus = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+      const data = retrieveData();
+      if (typeof data === 'string' ) {
+        setSelectedFolderUris(data);
+      }
+    })();
   }, []);
 
-  const pickFolder = async() =>{
+  const retrieveData = async () => {
     try {
-      const cemeraPremission = await CameraPermissions()
-      setCameraGranted(cemeraPremission)
-      const storagePremission = await StoragePermissions()
-      setStorageGranted(storagePremission)
-
-      if (storageGranted === PermissionsAndroid.RESULTS.GRANTED || cameraGranted === PermissionsAndroid.RESULTS.GRANTED) {
-        FilePickerManager.showFilePicker({}, async (response) => {
-          if (response.didCancel) {
-            console.log('User cancelled file picker');
-          } else if (response.error) {
-            console.log('File picker error:', response.error);
-          } else {
-            console.log('Selected folder:', response.path);
-            setDirectory(response.path);
-          }
-        });
-      } else {
-        console.log('Permission denied');
+      const value = await AsyncStorage.getItem(storeKey);
+      if (value !== null) {
+        // We have data!!
+        console.log(value);
+        return value;
       }
-    } catch (error) {
-      console.error("error: ", error);
+     } catch (error) {
+      // Error retrieving data
+    }
+    return null;
+
+  }
+
+  const storeData = async (value: string) => {
+    try {
+      await AsyncStorage.setItem(storeKey, value)
+    } catch (e) {
+      // saving error
     }
   }
 
+  const pickFolder = async () => {
+    try {
+      const result = await DocumentPicker.pickDirectory({
+      });
+      if (result != null) {
+        // /storage/emulated/0/DCIM/Camera
+        const outputString = '/storage/emulated/0/' + decodeURIComponent(result.uri).split("primary")[1].split(':')[1]
+        setSelectedFolderUris(outputString);
+        storeData(outputString)
+      }
+    } catch (error) {
+      console.error('Error picking folder: ', error);
+    }
+  };
 
-  // Call this function to trigger folder selection
+  async function listImagesInFolder(folderPath: string) {
+    try {
+      const folderContents = await RNFS.readDir(folderPath);
+
+      // Filter the folder contents to get only image files (you can adjust the filter based on your needs).
+      const imageFiles = folderContents.filter((item) =>
+        item.isFile() && item.name.endsWith('.jpg') // or other image formats
+      );
+
+      // Now, `imageFiles` contains a list of image file objects in the folder.
+      console.log('Image Files:', imageFiles);
+    } catch (error) {
+      console.error('Error reading folder:', error);
+    }
+  }
+
+  // const pickFolder = async () => {
+  //   try {
+  //     const result = await DocumentPicker.pick({
+  //       type: [DocumentPicker.types.allFiles],
+  //     });
+  //     if (result) {
+  //       console.log(
+  //         result[0].uri,"\n",
+  //         result[0].type, "\n",// mime type
+  //         result[0].name,"\n",
+  //         result[0].size,"\n"
+  //       );
+
+  //       // Extract the folder path from the selected file's URI.
+  //       const folderPath = result[0].uri.substring(0, result[0].uri.lastIndexOf('/'));
+  //         console.log("folderPath:    ", folderPath)
+  //       // Now, you can use the `folderPath` to list all the image files within this folder.
+  //       listImagesInFolder(folderPath);
+  //     }
+  //   } catch (err) {
+  //     if (DocumentPicker.isCancel(err)) {
+  //       // User cancelled the picker
+  //     } else {
+  //       throw err;
+  //     }
+  //   }
+  // }
+
+
   return (
     <SafeAreaView style={styles.sectionContainer}>
-      <Text>Chosen Directory: {directory}</Text>
+      <KeepAwake />
+      <Text>{selectedFolderUris}</Text>
+      {selectedFolderUris ? <ImageList directoryPath={selectedFolderUris} />
+        : null}
       <Button title="Pick Folder" onPress={pickFolder} />
     </SafeAreaView>
   );
-
 }
-
-
-// import React from 'react';
-// import { SafeAreaView, View, Text, StyleSheet, PermissionsAndroid, TouchableOpacity, Platform, Alert } from 'react-native';
-// const App = () => {
-//   const proceed = () => {
-//     Alert.alert('Access to Gallery has been granted');
-//   };
-//   const permissions = async () => {
-//     if (Platform.OS === 'android') {
-//       const granted = await PermissionsAndroid.request(
-//         PermissionsAndroid.PERMISSIONS.CAMERA,
-//         {
-//           title: 'Camera Permission',
-//           message: 'App needs access to your camera',
-//           buttonPositive: 'OK',
-//           buttonNegative: 'Cancel',
-//         }
-//       );
-//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-//         proceed();
-//       } else {
-//         Alert.alert('Access to Gallery Denied');
-//       }
-//     } else {
-//       proceed();
-//     }
-//   };
-//   return (
-//     <SafeAreaView style={{ flex: 1 }}>
-//       <View style={styles.container}>
-//         <Text
-//           style={{
-//             fontSize: 18,
-//             textAlign: 'center',
-//             color: '#7a1229'
-//           }}>
-//         </Text>
-//         <Text
-//           style={{
-//             fontSize: 20,
-//             textAlign: 'center',
-//             color: '#0d8028'
-//           }}>
-//           React Permission Example
-//         </Text>
-//         <View style={styles.container}>
-//           <TouchableOpacity
-//             style={styles.buttonStyle}
-//             onPress={permissions}>
-//             <Text style={styles.textStyle}>
-//               Click to Grant Gallery Permission
-//             </Text>
-//           </TouchableOpacity>
-//         </View>
-//         <Text
-//           style={{
-//             fontSize: 20,
-//             textAlign: 'center',
-//             color: '#185ea3'
-//           }}>
-//           Gallery Permission Asked
-//           {'\n'}
-//           .........................
-//         </Text>
-//       </View>
-//     </SafeAreaView>
-//   );
-// };
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#f7f71b',
-//     justifyContent: 'center',
-//     padding: 10,
-//   },
-//   textStyle: {
-//     fontSize: 20,
-//     color: '#f8fc83',
-//   },
-//   buttonStyle: {
-//     alignItems: 'center',
-//     backgroundColor: '#a30d1c',
-//     padding: 50,
-//   },
-// });
-// export default App;

@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   sectionContainer: {
     paddingTop: 200,
     paddingHorizontal: 24,
-    backgroundColor:'red',
+    backgroundColor:'pink',
     height: '100%',
     alignItems: 'center',
     verticalAlign:'center'
