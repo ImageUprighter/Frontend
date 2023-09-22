@@ -9,10 +9,21 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     verticalAlign:'center'
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+
+  HomePageContainer: {
+    height: '100%',
+    padding:'2%',
+    width:'100%',
+    flex: 1,
+    alignItems: 'center',
+    verticalAlign:'center'
   },
+  sectionTitle: {
+    fontSize: height/8,
+    fontWeight: '600',
+    alignItems: 'center',
+  },
+
   sectionDescription: {
     fontSize: 18,
     fontWeight: '400',

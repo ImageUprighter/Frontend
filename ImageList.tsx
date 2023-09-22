@@ -5,6 +5,7 @@ import { styles } from './my_style';
 
 interface ImageListProps {
   directoryPath: string;
+  navigation: any;
 }
 
 interface ImageFile {
@@ -12,7 +13,7 @@ interface ImageFile {
   path: string;
 }
 
-const ImageList: React.FC<ImageListProps> = ({ directoryPath }) => {
+const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [shuffledImages, setShuffledImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -135,6 +136,7 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath }) => {
 
     if (timeSinceLastPress < doublePressThreshold) {
       // Double press detected
+      navigation.openDrawer()
       console.log('Double press detected!');
     }
 

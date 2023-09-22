@@ -1,22 +1,8 @@
 import { PermissionsAndroid, Platform, Alert } from 'react-native';
-// import * as Permissions from 'expo-permissions';
 
-// import * as MediaLibrary from 'expo-media-library';
-// import * as Permissions from 'expo-permissions';
 const proceed = () => {
     Alert.alert('Access to Gallery has been granted');
 };
-
-// export const StoragePermissions = async () => {
-//     const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-//     if (status === 'granted') {
-//         console.log('Storage permission granted');
-//     } else {
-//         console.log('Storage permission denied');
-//     }
-//     return status;
-// }
-
 
 export const CameraPermissions = async () => {
     if (Platform.OS === 'android') {

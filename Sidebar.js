@@ -3,14 +3,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-const Sidebar = ({ navigation }) => {
+const Sidebar = () => {
   return (
     <View>
-      <Text>Settings</Text>
+      <Text>Sidebar Content</Text>
+      {/* Add your sidebar navigation items here */}
       <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <Text>Home</Text>
       </TouchableOpacity>
-      {/* Add more settings/options here */}
+      <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+        <Text>Settings</Text>
+      </TouchableOpacity>
     </View>
   );
 };
