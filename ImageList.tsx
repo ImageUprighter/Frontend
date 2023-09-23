@@ -6,6 +6,8 @@ import { styles } from './my_style';
 interface ImageListProps {
   directoryPath: string;
   navigation: any;
+  setIsSidebarOpen: any;
+  isSidebarOpen: boolean;
 }
 
 interface ImageFile {
@@ -13,7 +15,7 @@ interface ImageFile {
   path: string;
 }
 
-const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
+const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsSidebarOpen, isSidebarOpen }) => {
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [shuffledImages, setShuffledImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -30,6 +32,7 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
     fetchImagesFromDirectory(directoryPath);
   }, [directoryPath]);
 
+
   useEffect(() => {
     const interval = setInterval(() => {
       // Increment the image index or reset to 0 if it reaches the end
@@ -44,12 +47,14 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
     return () => clearInterval(interval); // Cleanup the interval when the component unmounts
   }, [shuffledImages]);
 
+
   useEffect(() => {
     if (currentImageIndex === 0) {
       // If we've reached the end of the images, shuffle the array
       shuffleArray(imagePaths);
     }
   }, [currentImageIndex, imagePaths]);
+
 
   const fetchImagesFromDirectory = async (path: string) => {
     try {
@@ -69,6 +74,7 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
       console.error('Error reading directory:', error);
     }
   };
+
 
   const shuffleArray = (array: string[]) => {
     // Create a copy of the original array
@@ -90,6 +96,7 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
 
     setShuffledImages(shuffledArray);
   };
+
 
   const fadeInImages = () => {
     // Reset opacity values to 0
@@ -114,6 +121,7 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
     });
   };
 
+
   const fadeOutImages = () => {
     // Start the fade-out animation for both images
     Animated.parallel([
@@ -130,13 +138,14 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation }) => {
     ]).start();
   };
 
+
   const handleViewPress = () => {
     const currentTime = Date.now();
     const timeSinceLastPress = currentTime - lastPressTime;
 
     if (timeSinceLastPress < doublePressThreshold) {
       // Double press detected
-      navigation.openDrawer()
+      setIsSidebarOpen(!isSidebarOpen);
       console.log('Double press detected!');
     }
 

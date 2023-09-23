@@ -16,6 +16,8 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.HomePageContainer}>
             <Text style={styles.sectionTitle}>Settings</Text>
+
+            
         </SafeAreaView>
     );
 }

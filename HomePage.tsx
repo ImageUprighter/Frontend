@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Button, SafeAreaView, Text } from 'react-native';
 
 import { styles } from './my_style';
-import { useNavigation } from '@react-navigation/native';
 
 
 interface HomePageProps {

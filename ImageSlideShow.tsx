@@ -6,13 +6,16 @@ import ImageList from './ImageList';
 import KeepAwake from 'react-native-keep-awake';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
+import Sidebar from './Sidebar';
 
 interface ImageListProps {
   navigation: any;
 }
 const ImageSlideShow: React.FC<ImageListProps> = ({ navigation }) => {
 
- const [selectedFolderUris, setSelectedFolderUris] = useState<string>();
+  const [selectedFolderUris, setSelectedFolderUris] = useState<string>();
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
   const storeKey = '@directory_path'
 
   useEffect(() => {
@@ -67,12 +70,14 @@ const ImageSlideShow: React.FC<ImageListProps> = ({ navigation }) => {
   return (
     selectedFolderUris ? <SafeAreaView style={styles.sectionContainer}>
       <KeepAwake />
-      <ImageList directoryPath={selectedFolderUris} navigation={navigation} />
+      <ImageList directoryPath={selectedFolderUris} navigation={navigation} setIsSidebarOpen={setIsSidebarOpen} isSidebarOpen={isSidebarOpen} />
+      {isSidebarOpen ? <Sidebar navigation={navigation} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} /> : null}
     </SafeAreaView> :
 
       <SafeAreaView style={styles.HomePageContainer}>
         <Text style={styles.sectionTitle}>Choose a directory</Text>
         <Button title="Pick Folder" onPress={pickFolder} />
+        {isSidebarOpen ? <Sidebar navigation={navigation} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} /> : null}
       </SafeAreaView>
   );
 }
