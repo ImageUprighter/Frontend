@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import HomePage from './HomePage';
-import Settings from './Settings';
-import ImageSlideShow from './ImageSlideShow';
+import HomePage from './src/HomePage';
+import Settings from './src/Settings';
+import ImageSlideShow from './src/ImageSlideShow';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

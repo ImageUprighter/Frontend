@@ -1,23 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, TouchableWithoutFeedback, Animated } from 'react-native';
-import RNFS from 'react-native-fs';
-import { styles } from './my_style';
+import { styles } from '../styles/app.style';
+import { imageSliderStore } from '../stores/ImageSlider.store';
+
 
 interface ImageListProps {
-  directoryPath: string;
   navigation: any;
-  setIsSidebarOpen: any;
-  isSidebarOpen: boolean;
 }
 
-interface ImageFile {
-  name: string;
-  path: string;
-}
 
-const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsSidebarOpen, isSidebarOpen }) => {
-  const [imagePaths, setImagePaths] = useState<string[]>([]);
-  const [shuffledImages, setShuffledImages] = useState<string[]>([]);
+const ImageList: React.FC<ImageListProps> = ({ navigation }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentTimer, setCurrentTimer] = useState(5000);
   const [animationTimer, setAnimationTimer] = useState(500);
@@ -28,16 +20,20 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsS
   const backgroundOpacity = useRef(new Animated.Value(0)).current;
   const topImageOpacity = useRef(new Animated.Value(0)).current;
 
+  const currentTimerKey = '@current_timer'
+
+  const AnimationKey = '@animation'
+
   useEffect(() => {
-    fetchImagesFromDirectory(directoryPath);
-  }, [directoryPath]);
+    imageSliderStore.fetchImagesFromDirectory();
+  }, [imageSliderStore.selectedFolderUris]);
 
 
   useEffect(() => {
     const interval = setInterval(() => {
       // Increment the image index or reset to 0 if it reaches the end
       setCurrentImageIndex((prevIndex) =>
-        prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
+        prevIndex === imageSliderStore.shuffledImages.length - 1 ? 0 : prevIndex + 1
       );
 
       // Start the fade-in animation for both images
@@ -45,35 +41,15 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsS
     }, currentTimer + (animationTimer * 2)); // 5000 milliseconds = 5 seconds
 
     return () => clearInterval(interval); // Cleanup the interval when the component unmounts
-  }, [shuffledImages]);
+  }, [imageSliderStore.shuffledImages]);
 
 
   useEffect(() => {
     if (currentImageIndex === 0) {
       // If we've reached the end of the images, shuffle the array
-      shuffleArray(imagePaths);
+      shuffleArray(imageSliderStore.imagePaths);
     }
-  }, [currentImageIndex, imagePaths]);
-
-
-  const fetchImagesFromDirectory = async (path: string) => {
-    try {
-      const files = await RNFS.readDir(path);
-
-      // Filter and select only image files (you can customize the filter criteria)
-      const imageFiles = files.filter((file) =>
-        file.name.match(/\.(jpg|jpeg|png|gif)$/i)
-      );
-
-      // Extract image file paths
-      const imagePaths = imageFiles.map((file: ImageFile) => file.path);
-
-      setImagePaths(imagePaths);
-      shuffleArray(imagePaths);
-    } catch (error) {
-      console.error('Error reading directory:', error);
-    }
-  };
+  }, [currentImageIndex, imageSliderStore.imagePaths]);
 
 
   const shuffleArray = (array: string[]) => {
@@ -94,7 +70,7 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsS
       shuffledArray[randomIndex] = tempValue;
     }
 
-    setShuffledImages(shuffledArray);
+    imageSliderStore.updateShuffledImages(shuffledArray);
   };
 
 
@@ -145,8 +121,8 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsS
 
     if (timeSinceLastPress < doublePressThreshold) {
       // Double press detected
-      setIsSidebarOpen(!isSidebarOpen);
-      console.log('Double press detected!');
+      imageSliderStore.toggleSidebar();
+      // console.log('Double press detected!');
     }
 
     setLastPressTime(currentTime);
@@ -157,12 +133,12 @@ const ImageList: React.FC<ImageListProps> = ({ directoryPath, navigation, setIsS
 
       <View>
         <Animated.Image
-          source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+          source={{ uri: 'file://' + imageSliderStore.shuffledImages[currentImageIndex] }}
           style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
           blurRadius={10}
         />
         <Animated.Image
-          source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+          source={{ uri: 'file://' + imageSliderStore.shuffledImages[currentImageIndex] }}
           style={[styles.topImage, { opacity: topImageOpacity }]}
         />
       </View>

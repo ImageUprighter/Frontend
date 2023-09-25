@@ -2,21 +2,25 @@
 
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { sidebarStyle } from './Sidebar.style'
+import { sidebarStyle } from '../styles/Sidebar.style'
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { imageSliderStore } from '../stores/ImageSlider.store';
 
 interface SidebarProps {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: any;
   navigation: any;
 }
 
 
-const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen, navigation }) => {
+const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
+
+  const ReloadData = async() => {
+
+  }
+
   return (
     <View style={sidebarStyle.sidebarContainer}>
 
-      <TouchableOpacity onPress={() => setIsSidebarOpen(false)} style={sidebarStyle.timesButton}>
+      <TouchableOpacity onPress={imageSliderStore.toggleSidebar} style={sidebarStyle.timesButton}>
         <Icon name="times" size={53} color="black" />
       </TouchableOpacity>
 
@@ -30,16 +34,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen, navi
         <TouchableOpacity style={sidebarStyle.categoryButton} onPress={() => navigation.navigate('Settings')}>
           <Text style={sidebarStyle.closeButton}>Settings</Text>
         </TouchableOpacity>
-        
+
         <View style={sidebarStyle.line}></View>
 
-        <TouchableOpacity style={sidebarStyle.categoryButton} onPress={() => navigation.navigate('Settings')}>
+        <TouchableOpacity style={sidebarStyle.categoryButton} onPress={ReloadData}>
           <Text style={sidebarStyle.closeButton}>Reload Data</Text>
         </TouchableOpacity>
-        
+
         <View style={sidebarStyle.line}></View>
 
-        <TouchableOpacity onPress={() => setIsSidebarOpen(false)} style={sidebarStyle.closeButtonContainer}>
+        <TouchableOpacity onPress={imageSliderStore.toggleSidebar} style={sidebarStyle.closeButtonContainer}>
           <Text style={sidebarStyle.closeButton}>Close</Text>
         </TouchableOpacity>
       </View>

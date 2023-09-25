@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { Button, SafeAreaView, Text } from 'react-native';
 
-import { styles } from './my_style';
+import { styles } from '../styles/app.style';
 
 
 interface HomePageProps {
@@ -9,9 +8,6 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
-
-    useEffect(() => {
-    }, []);
 
     function navigateTo(pageName: string) {
         navigation.navigate(pageName);

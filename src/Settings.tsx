@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { SafeAreaView, Text } from 'react-native';
 
-import { styles } from './my_style';
+import { styles } from '../styles/app.style';
 
 interface SettingsProps {
     navigation: any; // Replace 'any' with the appropriate navigation type
@@ -17,7 +17,6 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
         <SafeAreaView style={styles.HomePageContainer}>
             <Text style={styles.sectionTitle}>Settings</Text>
 
-            
         </SafeAreaView>
     );
 }
