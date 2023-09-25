@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, TouchableWithoutFeedback, Animated } from 'react-native';
 import { styles } from '../styles/app.style';
 import { imageSliderStore } from '../stores/ImageSlider.store';
+import { observer } from 'mobx-react';
 
 
 interface ImageListProps {
@@ -9,7 +10,7 @@ interface ImageListProps {
 }
 
 
-const ImageList: React.FC<ImageListProps> = ({ navigation }) => {
+const ImageList: React.FC<ImageListProps> = observer(({ navigation }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentTimer, setCurrentTimer] = useState(5000);
   const [animationTimer, setAnimationTimer] = useState(500);
@@ -145,6 +146,6 @@ const ImageList: React.FC<ImageListProps> = ({ navigation }) => {
     </TouchableWithoutFeedback>
 
   );
-};
+});
 
 export default ImageList;

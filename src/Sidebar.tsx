@@ -5,16 +5,17 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { sidebarStyle } from '../styles/Sidebar.style'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { imageSliderStore } from '../stores/ImageSlider.store';
+import { observer } from 'mobx-react';
 
 interface SidebarProps {
   navigation: any;
 }
 
 
-const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
+const Sidebar: React.FC<SidebarProps> = observer(({ navigation }) => {
 
-  const ReloadData = async() => {
-
+  const ReloadData = async () => {
+    await imageSliderStore.fetchImagesFromDirectory();
   }
 
   return (
@@ -50,6 +51,6 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
 
     </View>
   );
-};
+});
 
 export default Sidebar;
