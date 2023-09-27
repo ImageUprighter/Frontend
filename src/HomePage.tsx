@@ -1,4 +1,4 @@
-import { Button, SafeAreaView, Text } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
 import { styles } from '../styles/app.style';
 
@@ -16,8 +16,12 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.HomePageContainer}>
             <Text style={styles.sectionTitle}>Image Slider</Text>
-            <Button title='Go To Settings' onPress={() => navigateTo("Settings")} />
-            <Button title='Show Image Slide Show' onPress={() => navigateTo("ImageSlideShow")} />
+            <TouchableOpacity onPress={() => navigateTo("Settings")} style={styles.buttonStyle}>
+                <Text style={styles.textButtonStyle}>Go To Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigateTo("ImageSlideShow")} style={styles.buttonStyle}>
+                <Text style={styles.textButtonStyle}>Show Image Slide Show</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }

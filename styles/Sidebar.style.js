@@ -13,11 +13,11 @@ export const sidebarStyle = StyleSheet.create({
     },
     timesButton: {
         position: 'absolute',
-        right: 10,
-        top: 10,
-        padding: 10,
-        backgroundColor: 'white',
-        borderRadius: 20,
+        right: 15,
+        top: 15,
+        padding: 5,
+        // backgroundColor: 'white',
+        borderRadius: 100,
     },
     buttonsContainer: {
         flex: 1,

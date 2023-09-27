@@ -1,112 +1,34 @@
 import { observable, action, makeObservable } from 'mobx';
-import DocumentPicker from 'react-native-document-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNFS from 'react-native-fs';
 
 
-interface ImageFile {
-    name: string;
-    path: string;
-}
-
-const directoryKey = '@directory_path'
+const TRANSITION_EFFECT = ['Fade', 'Cross Fade', 'Memory', 'Illusion', 'ripple', 'star', 'wind', 'wipe', 'slide', 'cube', 'swap', 'radial', 'door way']
 
 class SettingsStore {
-    selectedFolderUris: string | null = null;
-    isSidebarOpen: boolean = false;
-    imagePaths: string[] = [];
-    shuffledImages: string[] = [];
+    currentTimer: number = 5000; // 5 seconds
+    animationTimer: number = 500; // 0.5 seconds
+    current_transition: number = 0; // 0.5 seconds
 
     constructor() {
         makeObservable(this, {
-            selectedFolderUris: observable,
-            isSidebarOpen: observable,
-            imagePaths: observable,
-            shuffledImages: observable,
-            updateSelectedFolderUris: action,
-            toggleSidebar: action,
-            retrieveData: action,
-            storeData: action,
-            pickFolder: action,
-            fetchImagesFromDirectory: action,
-            updateImagePaths: action,
-            updateShuffledImages: action,
+            currentTimer: observable,
+            animationTimer: observable,
+            current_transition:observable,
+            updateCurrentTimer: action,
+            updateAnimationTimer: action,
+            updateCurrentTransition: action,
         });
     }
 
-    async retrieveData(storeKey: string) {
-        try {
-            const value = await AsyncStorage.getItem(storeKey);
-            if (typeof value === 'string') {
-                // We have data!!
-                this.updateSelectedFolderUris(value);
-            }
-        } catch (error) {
-            // Error retrieving data
-        }
+    updateCurrentTimer(newData: number) {
+        this.currentTimer = newData;
     }
 
-    async storeData(storeKey: string, value: string) {
-        try {
-            await AsyncStorage.setItem(storeKey, value)
-        } catch (e) {
-            // saving error
-        }
+    updateAnimationTimer(newData: number) {
+        this.animationTimer = newData;
     }
 
-    async pickFolder( setSelectedFolderUris: any) {
-        try {
-            const result = await DocumentPicker.pickDirectory({});
-            if (result != null) {
-                // /storage/emulated/0/DCIM/Camera
-                const outputString = '/storage/emulated/0/' + decodeURIComponent(result.uri).split("primary")[1].split(':')[1]
-                setSelectedFolderUris(outputString);
-                this.storeData(directoryKey, outputString)
-            }
-        } catch (error) {
-            console.error('Error picking folder: ', error);
-        }
-    };
-
-    async fetchImagesFromDirectory() {
-        try {
-            if (typeof this.selectedFolderUris !== 'string') {
-                await this.retrieveData(directoryKey);
-            }
-            if (typeof this.selectedFolderUris === 'string') {
-
-                const files = await RNFS.readDir(this.selectedFolderUris);
-
-                // Filter and select only image files (you can customize the filter criteria)
-                const imageFiles = files.filter((file) =>
-                    file.name.match(/\.(jpg|jpeg|png|gif)$/i)
-                );
-
-                // Extract image file paths
-                const imagePaths = imageFiles.map((file: ImageFile) => file.path);
-                this.updateImagePaths(imagePaths);
-                this.updateShuffledImages(imagePaths);
-            }
-        } catch (error) {
-            console.error('Error reading directory:', error);
-        }
-    };
-
-
-    updateSelectedFolderUris(newData: string | null) {
-        this.selectedFolderUris = newData;
-    }
-
-    updateShuffledImages(newData: string[]) {
-        this.shuffledImages = newData;
-    }
-
-    updateImagePaths(newData: string[]) {
-        this.imagePaths = newData;
-    }
-
-    toggleSidebar() {
-        this.isSidebarOpen = !this.isSidebarOpen;
+    updateCurrentTransition(newData:number){
+        this.current_transition = newData;
     }
 }
 

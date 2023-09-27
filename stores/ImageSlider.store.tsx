@@ -2,6 +2,7 @@ import { observable, action, makeObservable } from 'mobx';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
+import { directoryKey } from '../consts/Key.const'
 
 
 interface ImageFile {
@@ -9,7 +10,6 @@ interface ImageFile {
     path: string;
 }
 
-const directoryKey = '@directory_path'
 
 class ImageSliderStore {
     selectedFolderUris: string | null = null;
@@ -106,7 +106,9 @@ class ImageSliderStore {
     }
 
     toggleSidebar() {
+        console.log("before---- this.isSidebarOpen:  ", this.isSidebarOpen)
         this.isSidebarOpen = !this.isSidebarOpen;
+        console.log("after----- this.isSidebarOpen:  ", this.isSidebarOpen)
     }
 }
 
