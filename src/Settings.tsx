@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 import { styles } from '../styles/app.style';
+import PopupWithSelectOptions from './PopupWithSelect';
 
 interface SettingsProps {
     navigation: any; // Replace 'any' with the appropriate navigation type
@@ -20,6 +21,12 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.HomePageContainer}>
             <Text style={styles.sectionTitle}>Settings</Text>
+            <PopupWithSelectOptions data={[
+                'Option 1',
+                'Option 2',
+                'Option 3',
+            ]} />
+
             <View>
                 <Text>Choose </Text>
                 <TouchableOpacity onPress={() => navigateTo("Settings")} style={styles.buttonStyle}>

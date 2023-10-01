@@ -6,7 +6,7 @@ const TRANSITION_EFFECT = ['Fade', 'Cross Fade', 'Memory', 'Illusion', 'ripple',
 class SettingsStore {
     currentTimer: number = 5000; // 5 seconds
     animationTimer: number = 500; // 0.5 seconds
-    current_transition: number = 0; // 0.5 seconds
+    current_transition: number = 0; // 0 index
 
     constructor() {
         makeObservable(this, {
