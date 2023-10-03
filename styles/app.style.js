@@ -66,5 +66,22 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'black',
         alignItems: 'center',
+    },
+
+    item: {
+        padding: 16,
+        borderBottomWidth: 1,
+        borderColor: '#ccc',
+        width: '80%', // Adjust the width as needed (80% of the screen width in this example)
+    },
+    sectionItem: {
+        flex: 1,
+        flexWrap: 'wrap',
+        flexDirection: 'row-reverse'
+    },
+    settingsIcon: {
+        width: 50,
+        height: 50,
+        marginRight: 20
     }
 });

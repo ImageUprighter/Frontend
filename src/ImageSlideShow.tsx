@@ -14,10 +14,11 @@ interface ImageListProps {
 }
 
 const ImageSlideShow: React.FC<ImageListProps> = observer(({ navigation }) => {
-    
+
     useEffect(() => {
         (async () => {
-            await imageSliderStore.retrieveData(directoryKey);
+            const data = await imageSliderStore.retrieveData(directoryKey);
+            imageSliderStore.updateSelectedFolderUris(data)
         })();
     }, []);
 

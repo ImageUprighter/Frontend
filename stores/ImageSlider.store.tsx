@@ -39,11 +39,12 @@ class ImageSliderStore {
             const value = await AsyncStorage.getItem(storeKey);
             if (typeof value === 'string') {
                 // We have data!!
-                this.updateSelectedFolderUris(value);
+                return value;
             }
         } catch (error) {
             // Error retrieving data
         }
+        return null;
     }
 
     async storeData(storeKey: string, value: string) {
@@ -54,7 +55,7 @@ class ImageSliderStore {
         }
     }
 
-    async pickFolder( setSelectedFolderUris: any) {
+    async pickFolder(setSelectedFolderUris: any) {
         try {
             const result = await DocumentPicker.pickDirectory({});
             if (result != null) {
