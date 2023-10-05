@@ -6,6 +6,7 @@ import PopupWithSelectOptions from './PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
 import { observer } from 'mobx-react';
+import { imageSliderStore } from '../stores/ImageSlider.store';
 
 interface SettingsProps {
     navigation: any; // Replace 'any' with the appropriate navigation type
@@ -32,6 +33,9 @@ const Settings: React.FC<SettingsProps> = observer(({ navigation }) => {
     return (
         <SafeAreaView style={styles.HomePageContainer}>
             <Text style={styles.sectionTitle}>Settings</Text>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={sidebarStyle.timesButton}>
+                <Image source={require('../Icons/back.png')} style={{ width: 50, height: 50 }} />
+            </TouchableOpacity>
 
             <View style={sidebarStyle.line}></View>
 
