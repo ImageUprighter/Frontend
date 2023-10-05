@@ -7,6 +7,7 @@ import Sidebar from './Sidebar';
 import { imageSliderStore } from '../stores/ImageSlider.store';
 import { observer } from 'mobx-react';
 import { directoryKey } from '../consts/Key.const'
+import { settingsStore } from '../stores/Settings.store';
 
 
 interface ImageListProps {
@@ -19,6 +20,8 @@ const ImageSlideShow: React.FC<ImageListProps> = observer(({ navigation }) => {
         (async () => {
             const data = await imageSliderStore.retrieveData(directoryKey);
             imageSliderStore.updateSelectedFolderUris(data)
+
+            await settingsStore.update_all_data();
         })();
     }, []);
 
@@ -27,7 +30,7 @@ const ImageSlideShow: React.FC<ImageListProps> = observer(({ navigation }) => {
         imageSliderStore.selectedFolderUris ?
             <SafeAreaView style={styles.sectionContainer}>
                 <KeepAwake />
-                <ImageList navigation={navigation} />
+                <ImageList />
                 {imageSliderStore.isSidebarOpen ? <Sidebar navigation={navigation} /> : null}
             </SafeAreaView> :
 

@@ -6,12 +6,8 @@ import { settingsStore } from '../stores/Settings.store';
 import { observer } from 'mobx-react';
 
 
-interface ImageListProps {
-    navigation: any;
-}
 
-
-const ImageList: React.FC<ImageListProps> = observer(({ navigation }) => {
+const ImageList: React.FC = observer(() => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const doublePressThreshold = 300; // Adjust as needed (milliseconds)
     const [lastPressTime, setLastPressTime] = useState(0);
@@ -34,7 +30,7 @@ const ImageList: React.FC<ImageListProps> = observer(({ navigation }) => {
 
             // Start the fade-in animation for both images
             fadeInImages();
-        }, settingsStore.currentTimer + (settingsStore.animationTimer * 2)); // 5000 milliseconds = 5 seconds
+        }, (settingsStore.current_timer * 1000) + ((settingsStore.animation_timer * 1000) * 2)); // 5000 milliseconds = 5 seconds
 
         return () => clearInterval(interval); // Cleanup the interval when the component unmounts
     }, [imageSliderStore.shuffledImages]);
@@ -79,17 +75,16 @@ const ImageList: React.FC<ImageListProps> = observer(({ navigation }) => {
         Animated.parallel([
             Animated.timing(backgroundOpacity, {
                 toValue: 1,
-                duration: settingsStore.animationTimer,
+                duration: settingsStore.animation_timer * 1000,
                 useNativeDriver: false,
             }),
             Animated.timing(topImageOpacity, {
                 toValue: 1,
-                duration: settingsStore.animationTimer,
+                duration: settingsStore.animation_timer * 1000,
                 useNativeDriver: false,
             }),
         ]).start(() => {
-            // After 5 seconds, start the fade-out animation for both images
-            setTimeout(() => fadeOutImages(), settingsStore.currentTimer); // Delay of 4.5 seconds for a total of 5 seconds
+            setTimeout(() => fadeOutImages(), settingsStore.current_timer * 1000); // Delay of 4.5 seconds for a total of 5 seconds
         });
     };
 
@@ -99,12 +94,12 @@ const ImageList: React.FC<ImageListProps> = observer(({ navigation }) => {
         Animated.parallel([
             Animated.timing(backgroundOpacity, {
                 toValue: 0,
-                duration: settingsStore.animationTimer,
+                duration: settingsStore.animation_timer * 1000,
                 useNativeDriver: false,
             }),
             Animated.timing(topImageOpacity, {
                 toValue: 0,
-                duration: settingsStore.animationTimer,
+                duration: settingsStore.animation_timer * 1000,
                 useNativeDriver: false,
             }),
         ]).start();
@@ -118,7 +113,6 @@ const ImageList: React.FC<ImageListProps> = observer(({ navigation }) => {
         if (timeSinceLastPress < doublePressThreshold) {
             // Double press detected
             imageSliderStore.toggleSidebar();
-            // console.log('Double press detected!');
         }
 
         setLastPressTime(currentTime);

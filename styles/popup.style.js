@@ -1,5 +1,4 @@
 import { StyleSheet, Dimensions } from 'react-native';
-const { height, width, } = Dimensions.get('window')
 
 export const popupStyle = StyleSheet.create({
     container: {
@@ -22,16 +21,15 @@ export const popupStyle = StyleSheet.create({
         justifyContent: 'flex-end', // Align modal at the bottom
     },
     modalContent: {
+        // position:'absolute',
         backgroundColor: 'white',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        // width:'100%',
-        // alignItems: 'center',
-
         padding: 20,
     },
     modalText: {
         marginBottom: 20,
+        fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -54,5 +52,13 @@ export const popupStyle = StyleSheet.create({
     },
     disabledButton: {
         backgroundColor: 'gray',
+    },
+    timesButton: {
+        position: 'relative',
+        right: 15,
+        top: 15,
+        padding: 5,
+        // backgroundColor: 'white',
+        borderRadius: 100,
     },
 });

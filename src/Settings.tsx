@@ -5,6 +5,7 @@ import { styles } from '../styles/app.style';
 import PopupWithSelectOptions from './PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
+import { observer } from 'mobx-react';
 
 interface SettingsProps {
     navigation: any; // Replace 'any' with the appropriate navigation type
@@ -15,7 +16,7 @@ interface DataOption {
     value: any;
 }
 
-const Settings: React.FC<SettingsProps> = ({ navigation }) => {
+const Settings: React.FC<SettingsProps> = observer(({ navigation }) => {
     const [modalData, setModalData] = useState<DataOption[] | null>(null);
     const [modalTitle, setModalTitle] = useState<string | null>(null);
 
@@ -57,8 +58,6 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
             </TouchableOpacity>
 
 
-
-
             <PopupWithSelectOptions data={modalData} setModalData={setModalData}
                 customData={true}
                 setModalTitle={setModalTitle}
@@ -78,6 +77,6 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
 
         </SafeAreaView>
     );
-}
+});
 
 export default Settings;

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Text, FlatList, Pressable, View, TouchableOpacity } from 'react-native';
+import { Modal, Text, FlatList, Pressable, View, TouchableOpacity, Image } from 'react-native';
 import { popupStyle } from '../styles/popup.style';
 import { imageSliderStore } from '../stores/ImageSlider.store';
-import { currentTimerKey, AnimationKey, keepScreenOnKey } from '../consts/Key.const'
+import { currentTimerKey, AnimationTimerKey, keepScreenOnKey } from '../consts/Key.const'
+import { settingsStore } from '../stores/Settings.store';
+import { observer } from 'mobx-react';
 
 interface DataOption {
     display: string;
@@ -17,7 +19,7 @@ interface SingleSelectFlatListProps {
     setModalTitle: any;
 }
 
-const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, title, customData, setModalData, setModalTitle }) => {
+const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = observer(({ data, title, customData, setModalData, setModalTitle }) => {
     const [selectedItem, setSelectedItem] = useState<DataOption | null>(null);
     const [currentKey, setCurrentKey] = useState<string | null>(null);
     const [changed, setChanged] = useState<boolean>(false);
@@ -31,11 +33,10 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
                 given_data = await imageSliderStore.retrieveData(currentTimerKey);
             }
             else if (title === "Animation Time") {
-                setCurrentKey(AnimationKey)
-                given_data = await imageSliderStore.retrieveData(AnimationKey);
+                setCurrentKey(AnimationTimerKey)
+                given_data = await imageSliderStore.retrieveData(AnimationTimerKey);
             }
-
-            if (typeof given_data !== null && data !== null) {
+            if (given_data !== null && data !== null) {
                 const my_data_index: number = data.findIndex(element => element.value === given_data)
                 if (my_data_index !== -1) {
                     setSelectedItem(data[my_data_index]);
@@ -70,7 +71,23 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
     const saveModal = async () => {
         if (selectedItem !== null && currentKey !== null && changed) {
             await imageSliderStore.storeData(currentKey, selectedItem.value);
+            if (title === "Display Time") {
+                settingsStore.updateCurrentTimer(selectedItem.value)
+            }
+            else if (title === "Animation Time") {
+                settingsStore.updateAnimationTimer(selectedItem.value)
+            }
+            else if (title === "Transition Effect") {
+                settingsStore.updateCurrentTransition(selectedItem.value)
+            }
+            else if (title === "Display Effect") {
+                settingsStore.updateDisplayEffect(selectedItem.value)
+            }
+            else if (title === "Photo Order") {
+                settingsStore.updatePhotoOrder(selectedItem.value)
+            }
             closeModal()
+            setChanged(false)
         }
     }
 
@@ -83,6 +100,9 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
                 onRequestClose={closeModal}>
                 <View style={popupStyle.modalBackground}>
                     <View style={popupStyle.modalContent}>
+                        <TouchableOpacity onPress={closeModal} style={popupStyle.timesButton}>
+                            <Image source={require('../Icons/close.png')} style={{ width: 30, height: 30 }} />
+                        </TouchableOpacity>
                         <Text style={popupStyle.modalText}>Change {title}</Text>
                         <FlatList
                             data={data}
@@ -90,7 +110,7 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
                             keyExtractor={(item) => item.value.toString()} // Use the 'value' property as the key
                             extraData={selectedItem} // Re-render the list when the selectedItem changes
                         />
-                        <View style={{width:'100%', alignItems:'center'}}>
+                        <View style={{ width: '100%', alignItems: 'center' }}>
 
                             <Pressable disabled={!changed}
                                 style={[popupStyle.closeModalButton, !changed ? popupStyle.disabledButton : null]} onPress={saveModal}>
@@ -102,6 +122,6 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
             </Modal>
         </View>
     );
-};
+});
 
 export default PopupWithSelectOptions;

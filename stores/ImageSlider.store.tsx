@@ -37,7 +37,7 @@ class ImageSliderStore {
     async retrieveData(storeKey: string) {
         try {
             const value = await AsyncStorage.getItem(storeKey);
-            if (typeof value === 'string') {
+            if (typeof value !== null) {
                 // We have data!!
                 return value;
             }
