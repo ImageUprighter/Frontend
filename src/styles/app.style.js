@@ -1,6 +1,8 @@
 import { StyleSheet, Dimensions } from 'react-native';
 const { height, width } = Dimensions.get('window')
 
+const vh = height / 100;
+const vw = width / 100;
 export const styles = StyleSheet.create({
     sectionContainer: {
         backgroundColor: 'black',
@@ -19,13 +21,13 @@ export const styles = StyleSheet.create({
         verticalAlign: 'center'
     },
     sectionTitle: {
-        fontSize: height / 30,//height/30
+        fontSize: 8 * vh,//height/30
         fontWeight: '600',
         alignItems: 'center',
     },
 
     sectionDescription: {
-        fontSize: 18,
+        fontSize: 2 * vh,
         fontWeight: '400',
     },
     highlight: {
@@ -53,21 +55,20 @@ export const styles = StyleSheet.create({
     },
 
     buttonStyle: {
-        marginTop: height / 15,
+        marginTop: vh * 10,
         borderRadius: 20,
         backgroundColor: 'white',
-        padding: height / 18,
+        padding: vh * 5,
         borderColor: 'black',
         borderWidth: 3,
     },
 
     textButtonStyle: {
-        fontSize: 30,
+        fontSize: 4 * vh,
         fontWeight: 'bold',
         color: 'black',
         alignItems: 'center',
     },
-
     item: {
         padding: 16,
         borderBottomWidth: 1,

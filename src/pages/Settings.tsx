@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { styles } from '../styles/app.style';
 import PopupWithSelectOptions from '../components/PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../../consts/Key.const'
+// import { ScrollView } from 'react-native-gesture-handler';
 
 interface SettingsProps {
     navigation: any; // Replace 'any' with the appropriate navigation type
@@ -19,17 +20,13 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     const [modalData, setModalData] = useState<DataOption[] | null>(null);
     const [modalTitle, setModalTitle] = useState<string | null>(null);
 
-
-    useEffect(() => {
-    }, []);
-
     function updateData(title: string, data: DataOption[]) {
         setModalData(data);
         setModalTitle(title)
     }
 
     return (
-        <SafeAreaView style={styles.HomePageContainer}>
+        <ScrollView style={styles.HomePageContainer}>
             <Text style={styles.sectionTitle}>Settings</Text>
             <TouchableOpacity onPress={() => navigation.goBack()} style={sidebarStyle.timesButton}>
                 <Image source={require('../../Icons/back.png')} style={{ width: 50, height: 50 }} />
@@ -77,7 +74,7 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
             </TouchableOpacity> */}
 
 
-        </SafeAreaView>
+        </ScrollView>
     );
 };
 

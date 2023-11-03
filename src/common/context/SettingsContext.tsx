@@ -1,7 +1,8 @@
-import { FC, useState, createContext, useContext } from "react";
+import { FC, useState, createContext, useContext, useEffect } from "react";
 import * as keys from '../../../consts/Key.const'
 import { useImageSliderContext } from "./ImageSliderContext";
 
+//TODO: have problem while saving the settings data in context - not saved! + not showing pictures!!!!
 
 interface SettingsContextValue {
     current_timer: number;
@@ -29,21 +30,31 @@ export const SettingsProvider: FC<{ children: React.ReactNode }> = ({ children }
     const [photo_order, setPhotoOrder] = useState<string>("Shuffle");
     const { retrieveData } = useImageSliderContext();
 
+    useEffect(() => {
+        (async () => {
+            await update_all_data();
+        })();
+    }, []);
 
     async function update_all_data() {
         let curr_data = await retrieveData(keys.AnimationTimerKey);
+        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setAnimationTimer(parseInt(curr_data));
 
         curr_data = await retrieveData(keys.currentTimerKey);
+        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setCurrentTimer(parseInt(curr_data));
 
         curr_data = await retrieveData(keys.photoOrderKey);
+        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setPhotoOrder(curr_data);
 
         curr_data = await retrieveData(keys.displayEffectKey);
+        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setDisplayEffect(curr_data);
 
         curr_data = await retrieveData(keys.currentTransitionKey);
+        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setCurrentTransition(curr_data);
     }
 

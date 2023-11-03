@@ -46,9 +46,10 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
         return null;
     }
 
-    async function storeData(storeKey: string, value: string) {
+    async function storeData(storeKey: string, value: any) {
+        console.log("storeKey:  ", storeKey, typeof storeKey, typeof value)
         try {
-            await AsyncStorage.setItem(storeKey, value)
+            await AsyncStorage.setItem(storeKey, JSON.stringify(value))
         } catch (e) {
             // saving error
         }

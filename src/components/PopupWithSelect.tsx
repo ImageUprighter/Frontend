@@ -22,13 +22,14 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
     const [selectedItem, setSelectedItem] = useState<DataOption | null>(null);
     const [currentKey, setCurrentKey] = useState<string | null>(null);
     const [changed, setChanged] = useState<boolean>(false);
-    const { retrieveData, storeData} = useImageSliderContext();
-    const { setCurrentTimer, setAnimationTimer, setCurrentTransition, setDisplayEffect, setPhotoOrder} = useSettingsContext();
+    const { retrieveData, storeData } = useImageSliderContext();
+    const { setCurrentTimer, setAnimationTimer, setCurrentTransition, setDisplayEffect, setPhotoOrder } = useSettingsContext();
 
 
     useEffect(() => {
         (async () => {
-            var given_data: string | null = null;
+            let given_data: string | null = null;
+            console.log('✌️title --->', title);
             if (title === "Display Time") {
                 setCurrentKey(currentTimerKey)
                 given_data = await retrieveData(currentTimerKey);
@@ -37,15 +38,24 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
                 setCurrentKey(AnimationTimerKey)
                 given_data = await retrieveData(AnimationTimerKey);
             }
+            console.log('✌️given_data --->', given_data);
+            console.log('✌️data --->', data);
             if (given_data !== null && data !== null) {
-                const my_data_index: number = data.findIndex(element => element.value === given_data)
+                const my_data_index: number = data.findIndex((element: DataOption) => {
+                    let update_data_type: number | string | null = given_data;
+                    if (typeof element.value === "number") {
+                        update_data_type = Number(given_data);
+                    }
+                    return element.value == update_data_type
+                })
+                console.log('✌️my_data_index --->', my_data_index);
                 if (my_data_index !== -1) {
                     setSelectedItem(data[my_data_index]);
                 }
             }
 
         })();
-    }, []);
+    }, [title, data]);
 
 
     const handleItemPress = (item: DataOption) => {
@@ -70,7 +80,12 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
     };
 
     const saveModal = async () => {
+        console.log('✌️changed --->', changed);
+        console.log('✌️currentKey --->', currentKey);
+        console.log('✌️selectedItem --->', selectedItem);
         if (selectedItem !== null && currentKey !== null && changed) {
+            console.log('hello --->');
+
             storeData(currentKey, selectedItem.value);
             if (title === "Display Time") {
                 setCurrentTimer(selectedItem.value)
@@ -78,15 +93,15 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
             else if (title === "Animation Time") {
                 setAnimationTimer(selectedItem.value)
             }
-            else if (title === "Transition Effect") {
-                setCurrentTransition(selectedItem.value)
-            }
-            else if (title === "Display Effect") {
-                setDisplayEffect(selectedItem.value)
-            }
-            else if (title === "Photo Order") {
-                setPhotoOrder(selectedItem.value)
-            }
+            // else if (title === "Transition Effect") {
+            //     setCurrentTransition(selectedItem.value)
+            // }
+            // else if (title === "Display Effect") {
+            //     setDisplayEffect(selectedItem.value)
+            // }
+            // else if (title === "Photo Order") {
+            //     setPhotoOrder(selectedItem.value)
+            // }
             closeModal()
             setChanged(false)
         }

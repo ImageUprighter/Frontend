@@ -1,6 +1,9 @@
 import { StyleSheet, Dimensions } from 'react-native';
 const { height, width } = Dimensions.get('window')
 
+const vh = height / 100;
+const vw = width / 100;
+
 export const sidebarStyle = StyleSheet.create({
     sidebarContainer: {
         position: 'absolute',
@@ -25,27 +28,26 @@ export const sidebarStyle = StyleSheet.create({
         alignItems: 'center'
     },
     categoryButton: {
-        fontSize: height / 8,
+        fontSize: 8 * vh,
         fontWeight: '600',
         alignItems: 'center',
     },
     closeButton: {
-        fontSize: 20,
+        fontSize: 2 * vh,
         fontWeight: 'bold',
-        color:'black',
+        color: 'black',
         alignItems: 'center',
     },
-    closeButtonContainer:{
-        // marginTop: height / 15,
+    closeButtonContainer: {
         borderRadius: 20,
         backgroundColor: 'white',
         padding: 10,
     },
-    line:{
+    line: {
         height: 1,
-        marginVertical: height / 20,
-        backgroundColor:"gray",
-        width:'80%',
+        marginVertical: vh * 5,
+        backgroundColor: "gray",
+        width: '80%',
     }
 
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, TouchableWithoutFeedback, Animated } from 'react-native';
+import { View, TouchableWithoutFeedback, Animated, Image } from 'react-native';
 import { styles } from '../styles/app.style';
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
@@ -10,6 +10,7 @@ const ImageList: React.FC = () => {
     const doublePressThreshold = 300; // Adjust as needed (milliseconds)
     const [lastPressTime, setLastPressTime] = useState(0);
     const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, setShuffledImages, toggleSidebar } = useImageSliderContext();
+    console.log('✌️shuffledImages --->', shuffledImages);
     const { current_timer, animation_timer } = useSettingsContext();
 
     // Use refs for animated values
@@ -118,19 +119,22 @@ const ImageList: React.FC = () => {
         setLastPressTime(currentTime);
     };
 
+    { console.log("✌️---->", 'file:/' + shuffledImages[currentImageIndex] ) }
     return (
         <TouchableWithoutFeedback onPress={handleViewPress}>
 
             <View>
-                <Animated.Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                <Image source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    style={[styles.topImage]}/>
+                {/* <Animated.Image
+                    source={{ uri: 'file:/' + shuffledImages[currentImageIndex] }}
                     style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
                     blurRadius={10}
                 />
                 <Animated.Image
                     source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.topImage, { opacity: topImageOpacity }]}
-                />
+                /> */}
             </View>
         </TouchableWithoutFeedback>
 
