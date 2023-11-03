@@ -1,47 +1,47 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, TouchableWithoutFeedback, Animated } from 'react-native';
 import { styles } from '../styles/app.style';
-import { imageSliderStore } from '../stores/ImageSlider.store';
-import { settingsStore } from '../stores/Settings.store';
-import { observer } from 'mobx-react';
+import { useImageSliderContext } from '../common/context/ImageSliderContext';
+import { useSettingsContext } from '../common/context/SettingsContext';
 
 
-
-const ImageList: React.FC = observer(() => {
+const ImageList: React.FC = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const doublePressThreshold = 300; // Adjust as needed (milliseconds)
     const [lastPressTime, setLastPressTime] = useState(0);
+    const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, setShuffledImages, toggleSidebar } = useImageSliderContext();
+    const { current_timer, animation_timer } = useSettingsContext();
 
     // Use refs for animated values
     const backgroundOpacity = useRef(new Animated.Value(0)).current;
     const topImageOpacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        imageSliderStore.fetchImagesFromDirectory();
-    }, [imageSliderStore.selectedFolderUris]);
+        fetchImagesFromDirectory();
+    }, [selectedFolderUris]);
 
 
     useEffect(() => {
         const interval = setInterval(() => {
             // Increment the image index or reset to 0 if it reaches the end
             setCurrentImageIndex((prevIndex) =>
-                prevIndex === imageSliderStore.shuffledImages.length - 1 ? 0 : prevIndex + 1
+                prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
             );
 
             // Start the fade-in animation for both images
             fadeInImages();
-        }, (settingsStore.current_timer * 1000) + ((settingsStore.animation_timer * 1000) * 2)); // 5000 milliseconds = 5 seconds
+        }, (current_timer * 1000) + ((animation_timer * 1000) * 2)); // 5000 milliseconds = 5 seconds
 
         return () => clearInterval(interval); // Cleanup the interval when the component unmounts
-    }, [imageSliderStore.shuffledImages]);
+    }, [shuffledImages]);
 
 
     useEffect(() => {
         if (currentImageIndex === 0) {
             // If we've reached the end of the images, shuffle the array
-            shuffleArray(imageSliderStore.imagePaths);
+            shuffleArray(imagePaths);
         }
-    }, [currentImageIndex, imageSliderStore.imagePaths]);
+    }, [currentImageIndex, imagePaths]);
 
 
     const shuffleArray = (array: string[]) => {
@@ -62,7 +62,7 @@ const ImageList: React.FC = observer(() => {
             shuffledArray[randomIndex] = tempValue;
         }
 
-        imageSliderStore.updateShuffledImages(shuffledArray);
+        setShuffledImages(shuffledArray);
     };
 
 
@@ -75,16 +75,16 @@ const ImageList: React.FC = observer(() => {
         Animated.parallel([
             Animated.timing(backgroundOpacity, {
                 toValue: 1,
-                duration: settingsStore.animation_timer * 1000,
+                duration: animation_timer * 1000,
                 useNativeDriver: false,
             }),
             Animated.timing(topImageOpacity, {
                 toValue: 1,
-                duration: settingsStore.animation_timer * 1000,
+                duration: animation_timer * 1000,
                 useNativeDriver: false,
             }),
         ]).start(() => {
-            setTimeout(() => fadeOutImages(), settingsStore.current_timer * 1000); // Delay of 4.5 seconds for a total of 5 seconds
+            setTimeout(() => fadeOutImages(), current_timer * 1000); // Delay of 4.5 seconds for a total of 5 seconds
         });
     };
 
@@ -94,12 +94,12 @@ const ImageList: React.FC = observer(() => {
         Animated.parallel([
             Animated.timing(backgroundOpacity, {
                 toValue: 0,
-                duration: settingsStore.animation_timer * 1000,
+                duration: animation_timer * 1000,
                 useNativeDriver: false,
             }),
             Animated.timing(topImageOpacity, {
                 toValue: 0,
-                duration: settingsStore.animation_timer * 1000,
+                duration: animation_timer * 1000,
                 useNativeDriver: false,
             }),
         ]).start();
@@ -112,7 +112,7 @@ const ImageList: React.FC = observer(() => {
 
         if (timeSinceLastPress < doublePressThreshold) {
             // Double press detected
-            imageSliderStore.toggleSidebar();
+            toggleSidebar();
         }
 
         setLastPressTime(currentTime);
@@ -123,18 +123,18 @@ const ImageList: React.FC = observer(() => {
 
             <View>
                 <Animated.Image
-                    source={{ uri: 'file://' + imageSliderStore.shuffledImages[currentImageIndex] }}
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
                     blurRadius={10}
                 />
                 <Animated.Image
-                    source={{ uri: 'file://' + imageSliderStore.shuffledImages[currentImageIndex] }}
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.topImage, { opacity: topImageOpacity }]}
                 />
             </View>
         </TouchableWithoutFeedback>
 
     );
-});
+};
 
 export default ImageList;

@@ -3,26 +3,26 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { sidebarStyle } from '../styles/Sidebar.style'
-import { imageSliderStore } from '../stores/ImageSlider.store';
-import { observer } from 'mobx-react';
-// import Close from '../Icons/close.png';
+import { useImageSliderContext } from '../common/context/ImageSliderContext';
 
 interface SidebarProps {
     navigation: any;
 }
 
 
-const Sidebar: React.FC<SidebarProps> = observer(({ navigation }) => {
+const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
+
+    const { fetchImagesFromDirectory, toggleSidebar, pickFolder, setSelectedFolderUris } = useImageSliderContext();
 
     const ReloadData = async () => {
-        await imageSliderStore.fetchImagesFromDirectory();
+        await fetchImagesFromDirectory();
     }
 
     return (
         <View style={sidebarStyle.sidebarContainer}>
 
-            <TouchableOpacity onPress={() => imageSliderStore.toggleSidebar()} style={sidebarStyle.timesButton}>
-                <Image source={require('../Icons/close.png')} style={{ width: 30, height: 30 }} />
+            <TouchableOpacity onPress={() => toggleSidebar()} style={sidebarStyle.timesButton}>
+                <Image source={require('../../Icons/close.png')} style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
 
             <View style={sidebarStyle.buttonsContainer}>
@@ -44,13 +44,20 @@ const Sidebar: React.FC<SidebarProps> = observer(({ navigation }) => {
 
                 <View style={sidebarStyle.line}></View>
 
-                <TouchableOpacity onPress={() => imageSliderStore.toggleSidebar()} style={sidebarStyle.closeButtonContainer}>
+                {/* check if it is working!!! */}
+                <TouchableOpacity style={sidebarStyle.categoryButton} onPress={() => pickFolder(setSelectedFolderUris)}>
+                    <Text style={sidebarStyle.closeButton}>Choose a directory</Text>
+                </TouchableOpacity>
+
+                <View style={sidebarStyle.line}></View>
+
+                <TouchableOpacity onPress={() => toggleSidebar()} style={sidebarStyle.closeButtonContainer}>
                     <Text style={sidebarStyle.closeButton}>Close</Text>
                 </TouchableOpacity>
             </View>
 
         </View>
     );
-});
+};
 
 export default Sidebar;

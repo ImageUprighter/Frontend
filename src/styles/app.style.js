@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
         verticalAlign: 'center'
     },
     sectionTitle: {
-        fontSize: height / 8,
+        fontSize: height / 30,//height/30
         fontWeight: '600',
         alignItems: 'center',
     },

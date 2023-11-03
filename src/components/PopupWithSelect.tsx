@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Text, FlatList, Pressable, View, TouchableOpacity, Image } from 'react-native';
 import { popupStyle } from '../styles/popup.style';
-import { imageSliderStore } from '../stores/ImageSlider.store';
-import { currentTimerKey, AnimationTimerKey, keepScreenOnKey } from '../consts/Key.const'
-import { settingsStore } from '../stores/Settings.store';
-import { observer } from 'mobx-react';
+import { currentTimerKey, AnimationTimerKey, keepScreenOnKey } from '../../consts/Key.const'
+import { useImageSliderContext } from '../common/context/ImageSliderContext';
+import { useSettingsContext } from '../common/context/SettingsContext';
 
 interface DataOption {
     display: string;
@@ -19,10 +18,12 @@ interface SingleSelectFlatListProps {
     setModalTitle: any;
 }
 
-const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = observer(({ data, title, customData, setModalData, setModalTitle }) => {
+const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, title, customData, setModalData, setModalTitle }) => {
     const [selectedItem, setSelectedItem] = useState<DataOption | null>(null);
     const [currentKey, setCurrentKey] = useState<string | null>(null);
     const [changed, setChanged] = useState<boolean>(false);
+    const { retrieveData, storeData} = useImageSliderContext();
+    const { setCurrentTimer, setAnimationTimer, setCurrentTransition, setDisplayEffect, setPhotoOrder} = useSettingsContext();
 
 
     useEffect(() => {
@@ -30,11 +31,11 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = observer(({ 
             var given_data: string | null = null;
             if (title === "Display Time") {
                 setCurrentKey(currentTimerKey)
-                given_data = await imageSliderStore.retrieveData(currentTimerKey);
+                given_data = await retrieveData(currentTimerKey);
             }
             else if (title === "Animation Time") {
                 setCurrentKey(AnimationTimerKey)
-                given_data = await imageSliderStore.retrieveData(AnimationTimerKey);
+                given_data = await retrieveData(AnimationTimerKey);
             }
             if (given_data !== null && data !== null) {
                 const my_data_index: number = data.findIndex(element => element.value === given_data)
@@ -70,21 +71,21 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = observer(({ 
 
     const saveModal = async () => {
         if (selectedItem !== null && currentKey !== null && changed) {
-            await imageSliderStore.storeData(currentKey, selectedItem.value);
+            storeData(currentKey, selectedItem.value);
             if (title === "Display Time") {
-                settingsStore.updateCurrentTimer(selectedItem.value)
+                setCurrentTimer(selectedItem.value)
             }
             else if (title === "Animation Time") {
-                settingsStore.updateAnimationTimer(selectedItem.value)
+                setAnimationTimer(selectedItem.value)
             }
             else if (title === "Transition Effect") {
-                settingsStore.updateCurrentTransition(selectedItem.value)
+                setCurrentTransition(selectedItem.value)
             }
             else if (title === "Display Effect") {
-                settingsStore.updateDisplayEffect(selectedItem.value)
+                setDisplayEffect(selectedItem.value)
             }
             else if (title === "Photo Order") {
-                settingsStore.updatePhotoOrder(selectedItem.value)
+                setPhotoOrder(selectedItem.value)
             }
             closeModal()
             setChanged(false)
@@ -101,7 +102,7 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = observer(({ 
                 <View style={popupStyle.modalBackground}>
                     <View style={popupStyle.modalContent}>
                         <TouchableOpacity onPress={closeModal} style={popupStyle.timesButton}>
-                            <Image source={require('../Icons/close.png')} style={{ width: 30, height: 30 }} />
+                            <Image source={require('../../Icons/close.png')} style={{ width: 30, height: 30 }} />
                         </TouchableOpacity>
                         <Text style={popupStyle.modalText}>Change {title}</Text>
                         <FlatList
@@ -122,6 +123,6 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = observer(({ 
             </Modal>
         </View>
     );
-});
+};
 
 export default PopupWithSelectOptions;
