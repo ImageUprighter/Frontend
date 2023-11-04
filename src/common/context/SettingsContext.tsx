@@ -38,23 +38,18 @@ export const SettingsProvider: FC<{ children: React.ReactNode }> = ({ children }
 
     async function update_all_data() {
         let curr_data = await retrieveData(keys.AnimationTimerKey);
-        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setAnimationTimer(parseInt(curr_data));
 
         curr_data = await retrieveData(keys.currentTimerKey);
-        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setCurrentTimer(parseInt(curr_data));
 
         curr_data = await retrieveData(keys.photoOrderKey);
-        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setPhotoOrder(curr_data);
 
         curr_data = await retrieveData(keys.displayEffectKey);
-        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setDisplayEffect(curr_data);
 
         curr_data = await retrieveData(keys.currentTransitionKey);
-        console.log('✌️curr_data --->', curr_data);
         if (curr_data !== null) setCurrentTransition(curr_data);
     }
 

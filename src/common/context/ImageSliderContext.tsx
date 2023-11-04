@@ -31,14 +31,15 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [imagePaths, setImagePaths] = useState<string[]>([]);
     const [shuffledImages, setShuffledImages] = useState<string[]>([]);
+    const [prevUri, setPrevUri] = useState<string | null>(null);
 
 
     async function retrieveData(storeKey: string): Promise<string | null> {
         try {
             const value = await AsyncStorage.getItem(storeKey);
-            if (typeof value !== null) {
+            if (value !== null) {
                 // We have data!!
-                return value;
+                return JSON.parse(value);
             }
         } catch (error) {
             // Error retrieving data
@@ -47,7 +48,6 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     }
 
     async function storeData(storeKey: string, value: any) {
-        console.log("storeKey:  ", storeKey, typeof storeKey, typeof value)
         try {
             await AsyncStorage.setItem(storeKey, JSON.stringify(value))
         } catch (e) {
@@ -58,8 +58,9 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     async function pickFolder(updateSelectedFolderUris: any) {
         try {
             const result = await DocumentPicker.pickDirectory({});
+
             if (result != null) {
-                // /storage/emulated/0/DCIM/Camera
+                setPrevUri(decodeURIComponent(result.uri).split("primary")[0])
                 const outputString = '/storage/emulated/0/' + decodeURIComponent(result.uri).split("primary")[1].split(':')[1]
                 updateSelectedFolderUris(outputString);
                 storeData(directoryKey, outputString)
@@ -72,10 +73,9 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     async function fetchImagesFromDirectory() {
         try {
             if (typeof selectedFolderUris !== 'string') {
-                await retrieveData(directoryKey);
+                setSelectedFolderUris(await retrieveData(directoryKey));
             }
             if (typeof selectedFolderUris === 'string') {
-
                 const files = await RNFS.readDir(selectedFolderUris);
 
                 // Filter and select only image files (you can customize the filter criteria)
@@ -94,9 +94,7 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     };
 
     function toggleSidebar() {
-        console.log("before---- isSidebarOpen:  ", isSidebarOpen)
         setIsSidebarOpen((prev) => { return !prev; });
-        console.log("after----- isSidebarOpen:  ", isSidebarOpen)
     }
 
     const ctxValue: ImageSliderContextValue = {

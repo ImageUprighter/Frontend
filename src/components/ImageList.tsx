@@ -10,7 +10,6 @@ const ImageList: React.FC = () => {
     const doublePressThreshold = 300; // Adjust as needed (milliseconds)
     const [lastPressTime, setLastPressTime] = useState(0);
     const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, setShuffledImages, toggleSidebar } = useImageSliderContext();
-    console.log('✌️shuffledImages --->', shuffledImages);
     const { current_timer, animation_timer } = useSettingsContext();
 
     // Use refs for animated values
@@ -18,22 +17,28 @@ const ImageList: React.FC = () => {
     const topImageOpacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        fetchImagesFromDirectory();
+        (async () => {
+            await fetchImagesFromDirectory();
+        }
+        )()
     }, [selectedFolderUris]);
 
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            // Increment the image index or reset to 0 if it reaches the end
-            setCurrentImageIndex((prevIndex) =>
-                prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
-            );
-
-            // Start the fade-in animation for both images
+        if (shuffledImages.length > 0) {
             fadeInImages();
-        }, (current_timer * 1000) + ((animation_timer * 1000) * 2)); // 5000 milliseconds = 5 seconds
+            const interval = setInterval(() => {
+                // Increment the image index or reset to 0 if it reaches the end
+                setCurrentImageIndex((prevIndex) =>
+                    prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
+                );
 
-        return () => clearInterval(interval); // Cleanup the interval when the component unmounts
+                // Start the fade-in animation for both images
+                fadeInImages();
+            }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2)); // 5000 milliseconds = 5 seconds
+
+            return () => clearInterval(interval); // Cleanup the interval when the component unmounts
+        }
     }, [shuffledImages]);
 
 
@@ -119,22 +124,24 @@ const ImageList: React.FC = () => {
         setLastPressTime(currentTime);
     };
 
-    { console.log("✌️---->", 'file:/' + shuffledImages[currentImageIndex] ) }
     return (
-        <TouchableWithoutFeedback onPress={handleViewPress}>
+        <TouchableWithoutFeedback onPress={handleViewPress} style={{ width: "100%", height: "100%" }}>
 
-            <View>
-                <Image source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
-                    style={[styles.topImage]}/>
-                {/* <Animated.Image
-                    source={{ uri: 'file:/' + shuffledImages[currentImageIndex] }}
+            <View style={{ width: "100%", height: "100%" }}>
+                {/* <Image
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    style={[styles.topImage]}
+
+                /> */}
+                <Animated.Image
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
                     blurRadius={10}
                 />
                 <Animated.Image
                     source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.topImage, { opacity: topImageOpacity }]}
-                /> */}
+                />
             </View>
         </TouchableWithoutFeedback>
 

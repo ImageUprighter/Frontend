@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, SafeAreaView, Text } from 'react-native';
+import { Button, Image, SafeAreaView, Text } from 'react-native';
 import { styles } from '../styles/app.style';
 import ImageList from './ImageList';
 import KeepAwake from 'react-native-keep-awake';
@@ -16,7 +16,7 @@ interface ImageListProps {
 const ImageSlideShow: React.FC<ImageListProps> = ({ navigation }) => {
 
     const { retrieveData, setSelectedFolderUris, selectedFolderUris, isSidebarOpen, pickFolder } = useImageSliderContext();
-    const { update_all_data} = useSettingsContext();
+    const { update_all_data } = useSettingsContext();
 
     useEffect(() => {
         (async () => {

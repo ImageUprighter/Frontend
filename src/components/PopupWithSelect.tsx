@@ -29,7 +29,6 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
     useEffect(() => {
         (async () => {
             let given_data: string | null = null;
-            console.log('✌️title --->', title);
             if (title === "Display Time") {
                 setCurrentKey(currentTimerKey)
                 given_data = await retrieveData(currentTimerKey);
@@ -38,17 +37,10 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
                 setCurrentKey(AnimationTimerKey)
                 given_data = await retrieveData(AnimationTimerKey);
             }
-            console.log('✌️given_data --->', given_data);
-            console.log('✌️data --->', data);
             if (given_data !== null && data !== null) {
                 const my_data_index: number = data.findIndex((element: DataOption) => {
-                    let update_data_type: number | string | null = given_data;
-                    if (typeof element.value === "number") {
-                        update_data_type = Number(given_data);
-                    }
-                    return element.value == update_data_type
+                    return element.value == given_data
                 })
-                console.log('✌️my_data_index --->', my_data_index);
                 if (my_data_index !== -1) {
                     setSelectedItem(data[my_data_index]);
                 }
@@ -80,11 +72,7 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
     };
 
     const saveModal = async () => {
-        console.log('✌️changed --->', changed);
-        console.log('✌️currentKey --->', currentKey);
-        console.log('✌️selectedItem --->', selectedItem);
         if (selectedItem !== null && currentKey !== null && changed) {
-            console.log('hello --->');
 
             storeData(currentKey, selectedItem.value);
             if (title === "Display Time") {

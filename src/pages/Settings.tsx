@@ -26,54 +26,58 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     }
 
     return (
-        <ScrollView style={styles.HomePageContainer}>
-            <Text style={styles.sectionTitle}>Settings</Text>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={sidebarStyle.timesButton}>
-                <Image source={require('../../Icons/back.png')} style={{ width: 50, height: 50 }} />
-            </TouchableOpacity>
+        <ScrollView style={{
+            height: '100%', width: "100%"
+        }}>
+            <View style={styles.HomePageContainer}>
 
-            <View style={sidebarStyle.line}></View>
+                <Text style={styles.sectionTitle}>Settings</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={sidebarStyle.timesButton}>
+                    <Image source={require('../../Icons/back.png')} style={{ width: 50, height: 50 }} />
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => updateData("Display Time", displayTimeData)} style={[styles.item, styles.sectionItem]}>
-                <Text style={styles.textButtonStyle}>Display Time</Text>
-                <Image source={require('../../Icons/clock.png')} style={styles.settingsIcon} />
-            </TouchableOpacity>
+                <View style={sidebarStyle.line}></View>
 
-            <TouchableOpacity onPress={() => updateData("Animation Time", animationTimeData)} style={[styles.item, styles.sectionItem]}>
-                <Text style={styles.textButtonStyle}>Animation Time</Text>
-                <Image source={require('../../Icons/clock.png')} style={styles.settingsIcon} />
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => updateData("Display Time", displayTimeData)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>Display Time</Text>
+                    <Image source={require('../../Icons/clock.png')} style={styles.settingsIcon} />
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => updateData("Transition Effect", TransitionEffectData)} style={[styles.item, styles.sectionItem]}>
-                <Text style={styles.textButtonStyle}>Transition Effect</Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => updateData("Animation Time", animationTimeData)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>Animation Time</Text>
+                    <Image source={require('../../Icons/clock.png')} style={styles.settingsIcon} />
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => updateData("Display Effect Data", displayEffectData)} style={[styles.item, styles.sectionItem]}>
-                <Text style={styles.textButtonStyle}>Display Effect Data</Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => updateData("Transition Effect", TransitionEffectData)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>Transition Effect</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => updateData("Photo Order Data", PhotoOrderData)} style={[styles.item, styles.sectionItem]}>
-                <Text style={styles.textButtonStyle}>Photo Order Data</Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => updateData("Display Effect Data", displayEffectData)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>Display Effect Data</Text>
+                </TouchableOpacity>
 
-
-            <PopupWithSelectOptions data={modalData} setModalData={setModalData}
-                customData={true}
-                setModalTitle={setModalTitle}
-                title={modalTitle} />
+                <TouchableOpacity onPress={() => updateData("Photo Order Data", PhotoOrderData)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>Photo Order Data</Text>
+                </TouchableOpacity>
 
 
-            {/* <View>
+                <PopupWithSelectOptions data={modalData} setModalData={setModalData}
+                    customData={true}
+                    setModalTitle={setModalTitle}
+                    title={modalTitle} />
+
+
+                {/* <View>
                 <Text>Choose </Text>
                 <TouchableOpacity onPress={() => navigateTo("Settings")} style={styles.buttonStyle}>
-                    <Text style={styles.textButtonStyle}>Go To Settings</Text>
+                <Text style={styles.textButtonStyle}>Go To Settings</Text>
                 </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={() => navigateTo("ImageSlideShow")} style={styles.buttonStyle}>
+                </View>
+                <TouchableOpacity onPress={() => navigateTo("ImageSlideShow")} style={styles.buttonStyle}>
                 <Text style={styles.textButtonStyle}>Show Image Slide Show</Text>
             </TouchableOpacity> */}
 
-
+            </View>
         </ScrollView>
     );
 };
