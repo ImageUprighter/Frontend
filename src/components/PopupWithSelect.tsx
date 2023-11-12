@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Text, FlatList, Pressable, View, TouchableOpacity, Image } from 'react-native';
 import { popupStyle } from '../styles/popup.style';
-import { currentTimerKey, AnimationTimerKey, keepScreenOnKey } from '../../consts/Key.const'
+import { currentTimerKey, AnimationTimerKey } from '../consts/Key.const'
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
 
@@ -105,7 +105,7 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
                 <View style={popupStyle.modalBackground}>
                     <View style={popupStyle.modalContent}>
                         <TouchableOpacity onPress={closeModal} style={popupStyle.timesButton}>
-                            <Image source={require('../../Icons/close.png')} style={{ width: 30, height: 30 }} />
+                            <Image source={require('../../assets/my_close.png')} style={{ width: 30, height: 30 }} />
                         </TouchableOpacity>
                         <Text style={popupStyle.modalText}>Change {title}</Text>
                         <FlatList

@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
         <View style={sidebarStyle.sidebarContainer}>
 
             <TouchableOpacity onPress={() => toggleSidebar()} style={sidebarStyle.timesButton}>
-                <Image source={require('../../Icons/close.png')} style={{ width: 30, height: 30 }} />
+                <Image source={require('../../assets/my_close.png')} style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
 
             <View style={sidebarStyle.buttonsContainer}>

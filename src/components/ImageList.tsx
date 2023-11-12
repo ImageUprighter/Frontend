@@ -3,6 +3,7 @@ import { View, TouchableWithoutFeedback, Animated, Image } from 'react-native';
 import { styles } from '../styles/app.style';
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
+import DocumentPicker from 'react-native-document-picker';
 
 
 const ImageList: React.FC = () => {
@@ -17,27 +18,28 @@ const ImageList: React.FC = () => {
     const topImageOpacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        (async () => {
-            await fetchImagesFromDirectory();
-        }
-        )()
+        console.log('✌️"hello" --->', selectedFolderUris);
+        fetchImagesFromDirectory();
+        // await pickFile();
     }, [selectedFolderUris]);
 
 
     useEffect(() => {
         if (shuffledImages.length > 0) {
-            fadeInImages();
-            const interval = setInterval(() => {
-                // Increment the image index or reset to 0 if it reaches the end
-                setCurrentImageIndex((prevIndex) =>
-                    prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
-                );
-
-                // Start the fade-in animation for both images
+            preloadImages(shuffledImages).then(() => {
                 fadeInImages();
-            }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2)); // 5000 milliseconds = 5 seconds
+                const interval = setInterval(() => {
+                    // Increment the image index or reset to 0 if it reaches the end
+                    setCurrentImageIndex((prevIndex) =>
+                        prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
+                    );
 
-            return () => clearInterval(interval); // Cleanup the interval when the component unmounts
+                    // Start the fade-in animation for both images
+                    fadeInImages();
+                }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2)); // 5000 milliseconds = 5 seconds
+
+                return () => clearInterval(interval); // Cleanup the interval when the component unmounts
+            });
         }
     }, [shuffledImages]);
 
@@ -48,6 +50,14 @@ const ImageList: React.FC = () => {
             shuffleArray(imagePaths);
         }
     }, [currentImageIndex, imagePaths]);
+
+    const preloadImages = async (imageArray: string[]) => {
+        const preloadPromises = imageArray.map(async (imageUri) => {
+            await Image.prefetch('file://' + imageUri);
+        });
+
+        return Promise.resolve(preloadPromises);
+    };
 
 
     const shuffleArray = (array: string[]) => {
@@ -79,12 +89,13 @@ const ImageList: React.FC = () => {
 
         // Start the fade-in animation for both images
         Animated.parallel([
-            Animated.timing(backgroundOpacity, {
+
+            Animated.timing(topImageOpacity, {
                 toValue: 1,
                 duration: animation_timer * 1000,
                 useNativeDriver: false,
             }),
-            Animated.timing(topImageOpacity, {
+            Animated.timing(backgroundOpacity, {
                 toValue: 1,
                 duration: animation_timer * 1000,
                 useNativeDriver: false,
@@ -98,12 +109,13 @@ const ImageList: React.FC = () => {
     const fadeOutImages = () => {
         // Start the fade-out animation for both images
         Animated.parallel([
-            Animated.timing(backgroundOpacity, {
+
+            Animated.timing(topImageOpacity, {
                 toValue: 0,
                 duration: animation_timer * 1000,
                 useNativeDriver: false,
             }),
-            Animated.timing(topImageOpacity, {
+            Animated.timing(backgroundOpacity, {
                 toValue: 0,
                 duration: animation_timer * 1000,
                 useNativeDriver: false,
@@ -134,12 +146,12 @@ const ImageList: React.FC = () => {
 
                 /> */}
                 <Animated.Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    source={{ uri: shuffledImages[currentImageIndex] }}
                     style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
                     blurRadius={10}
                 />
                 <Animated.Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    source={{ uri: shuffledImages[currentImageIndex] }}
                     style={[styles.topImage, { opacity: topImageOpacity }]}
                 />
             </View>

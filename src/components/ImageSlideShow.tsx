@@ -4,7 +4,7 @@ import { styles } from '../styles/app.style';
 import ImageList from './ImageList';
 import KeepAwake from 'react-native-keep-awake';
 import Sidebar from './Sidebar';
-import { directoryKey } from '../../consts/Key.const'
+import { directoryKey } from '../consts/Key.const'
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
 

@@ -1,6 +1,6 @@
 import { observable, action, makeObservable } from 'mobx';
 import { imageSliderStore } from './ImageSlider.store';
-import * as keys from '../consts/Key.const'
+import * as keys from '../src/consts/Key.const'
 
 // const TRANSITION_EFFECT = ['Fade', 'Cross Fade', 'Memory', 'Illusion', 'ripple', 'star', 'wind', 'wipe', 'slide', 'cube', 'swap', 'radial', 'door way']
 

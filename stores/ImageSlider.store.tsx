@@ -2,7 +2,7 @@ import { observable, action, makeObservable } from 'mobx';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
-import { directoryKey } from '../consts/Key.const'
+import { directoryKey } from '../src/consts/Key.const'
 
 
 interface ImageFile {

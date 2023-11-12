@@ -1,5 +1,5 @@
 import { FC, useState, createContext, useContext, useEffect } from "react";
-import * as keys from '../../../consts/Key.const'
+import * as keys from '../../consts/Key.const'
 import { useImageSliderContext } from "./ImageSliderContext";
 
 //TODO: have problem while saving the settings data in context - not saved! + not showing pictures!!!!

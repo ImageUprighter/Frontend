@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { styles } from '../styles/app.style';
 import PopupWithSelectOptions from '../components/PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
-import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../../consts/Key.const'
+import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
 // import { ScrollView } from 'react-native-gesture-handler';
 
 interface SettingsProps {
@@ -33,19 +33,19 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
 
                 <Text style={styles.sectionTitle}>Settings</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={sidebarStyle.timesButton}>
-                    <Image source={require('../../Icons/back.png')} style={{ width: 50, height: 50 }} />
+                    <Image source={require('../../assets/my_back.png')} style={{ width: 50, height: 50 }} />
                 </TouchableOpacity>
 
                 <View style={sidebarStyle.line}></View>
 
                 <TouchableOpacity onPress={() => updateData("Display Time", displayTimeData)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>Display Time</Text>
-                    <Image source={require('../../Icons/clock.png')} style={styles.settingsIcon} />
+                    <Image source={require('../../assets/my_clock.png')} style={styles.settingsIcon} />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => updateData("Animation Time", animationTimeData)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>Animation Time</Text>
-                    <Image source={require('../../Icons/clock.png')} style={styles.settingsIcon} />
+                    <Image source={require('../../assets/my_clock.png')} style={styles.settingsIcon} />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => updateData("Transition Effect", TransitionEffectData)} style={[styles.item, styles.sectionItem]}>

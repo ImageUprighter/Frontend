@@ -1,9 +1,9 @@
-import { FC, useState, createContext, useContext } from "react";
+import { FC, useState, createContext, useContext, useEffect } from "react";
 import { ImageFile } from "../interfaces/ImageFileInterface";
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
-import { directoryKey } from '../../../consts/Key.const'
+import { directoryKey } from '../../consts/Key.const'
 
 
 interface ImageSliderContextValue {
@@ -31,7 +31,6 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [imagePaths, setImagePaths] = useState<string[]>([]);
     const [shuffledImages, setShuffledImages] = useState<string[]>([]);
-    const [prevUri, setPrevUri] = useState<string | null>(null);
 
 
     async function retrieveData(storeKey: string): Promise<string | null> {
@@ -60,9 +59,12 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
             const result = await DocumentPicker.pickDirectory({});
 
             if (result != null) {
-                setPrevUri(decodeURIComponent(result.uri).split("primary")[0])
-                const outputString = '/storage/emulated/0/' + decodeURIComponent(result.uri).split("primary")[1].split(':')[1]
+                console.log('✌️result --->', result);
+                const outputString = RNFS.ExternalStorageDirectoryPath + "/" + decodeURIComponent(result.uri).split("primary")[1].split(':')[1]
+                console.log('✌️outputString --->', outputString);
                 updateSelectedFolderUris(outputString);
+
+                setSelectedFolderUris(outputString);
                 storeData(directoryKey, outputString)
             }
         } catch (error) {
@@ -70,21 +72,25 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
         }
     };
 
+
     async function fetchImagesFromDirectory() {
         try {
+
             if (typeof selectedFolderUris !== 'string') {
                 setSelectedFolderUris(await retrieveData(directoryKey));
             }
             if (typeof selectedFolderUris === 'string') {
-                const files = await RNFS.readDir(selectedFolderUris);
 
-                // Filter and select only image files (you can customize the filter criteria)
-                const imageFiles = files.filter((file) =>
-                    file.name.match(/\.(jpg|jpeg|png|gif)$/i)
-                );
+                const files = await RNFS.readDir(selectedFolderUris)
+                    .then(result => {                   
+                        result.filter((file) =>
+                            file.name.match(/\.(jpg|jpeg|png|gif)$/i)
+                        );
+                        return result;
+                    })
 
                 // Extract image file paths
-                const imagePaths = imageFiles.map((file: ImageFile) => file.path);
+                const imagePaths = files.map((file: ImageFile) => file.path);
                 setImagePaths(imagePaths);
                 setShuffledImages(imagePaths);
             }
