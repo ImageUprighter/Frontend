@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ImageSliderProvider } from './src/common/context/ImageSliderContext';
 import { SettingsProvider } from './src/common/context/SettingsContext';
+import { requestAllPermissions } from './src/components/Permissions';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ export default function App(): JSX.Element {
     useEffect(() => {
         (async () => {
             SystemNavigationBar.navigationHide();
+            await requestAllPermissions();
         })();
     }, []);
 

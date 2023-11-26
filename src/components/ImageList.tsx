@@ -4,6 +4,8 @@ import { styles } from '../styles/app.style';
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
 import DocumentPicker from 'react-native-document-picker';
+import FastImage from 'react-native-fast-image';
+import { BlurView } from '@react-native-community/blur';
 
 
 const ImageList: React.FC = () => {
@@ -26,20 +28,18 @@ const ImageList: React.FC = () => {
 
     useEffect(() => {
         if (shuffledImages.length > 0) {
-            preloadImages(shuffledImages).then(() => {
+            fadeInImages();
+            const interval = setInterval(() => {
+                // Increment the image index or reset to 0 if it reaches the end
+                setCurrentImageIndex((prevIndex) =>
+                    prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
+                );
+
+                // Start the fade-in animation for both images
                 fadeInImages();
-                const interval = setInterval(() => {
-                    // Increment the image index or reset to 0 if it reaches the end
-                    setCurrentImageIndex((prevIndex) =>
-                        prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
-                    );
+            }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2)); // 5000 milliseconds = 5 seconds
 
-                    // Start the fade-in animation for both images
-                    fadeInImages();
-                }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2)); // 5000 milliseconds = 5 seconds
-
-                return () => clearInterval(interval); // Cleanup the interval when the component unmounts
-            });
+            return () => clearInterval(interval); // Cleanup the interval when the component unmounts
         }
     }, [shuffledImages]);
 
@@ -50,15 +50,6 @@ const ImageList: React.FC = () => {
             shuffleArray(imagePaths);
         }
     }, [currentImageIndex, imagePaths]);
-
-    const preloadImages = async (imageArray: string[]) => {
-        const preloadPromises = imageArray.map(async (imageUri) => {
-            await Image.prefetch('file://' + imageUri);
-        });
-
-        return Promise.resolve(preloadPromises);
-    };
-
 
     const shuffleArray = (array: string[]) => {
         // Create a copy of the original array
@@ -139,22 +130,49 @@ const ImageList: React.FC = () => {
     return (
         <TouchableWithoutFeedback onPress={handleViewPress} style={{ width: "100%", height: "100%" }}>
 
-            <View style={{ width: "100%", height: "100%" }}>
+            <Animated.View style={[{ width: '100%', height: '100%' }
+                , { opacity: backgroundOpacity }
+            ]}>
                 {/* <Image
                     source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.topImage]}
 
                 /> */}
-                <Animated.Image
-                    source={{ uri: shuffledImages[currentImageIndex] }}
+                {/* <Animated.Image
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
                     blurRadius={10}
                 />
                 <Animated.Image
-                    source={{ uri: shuffledImages[currentImageIndex] }}
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.topImage, { opacity: topImageOpacity }]}
+                /> */}
+                <FastImage
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    style={[styles.backgroundImage]}
+                    resizeMode='cover'
                 />
-            </View>
+                {/* <Image
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    style={[styles.backgroundImage]}
+                    resizeMode='cover'
+                    blurRadius={10}
+                /> */}
+                {/* <View style={[styles.backgroundImage, styles.blurOverlay]} 
+                /> */}
+
+                <BlurView
+                    style={[styles.backgroundImage, styles.blurOverlay]}
+                    blurType="light" // You can adjust the blur type as needed
+                    blurAmount={10}   // You can adjust the blur amount as needed
+                    blurRadius={10}
+                />
+                <FastImage
+                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    style={[styles.topImage]}
+                    resizeMode="contain"
+                />
+            </Animated.View>
         </TouchableWithoutFeedback>
 
     );

@@ -12,7 +12,7 @@ export const sidebarStyle = StyleSheet.create({
         bottom: 0,
         width: 200, // Adjust the width of your sidebar as needed
         backgroundColor: 'lightgray',
-        zIndex: 1,
+        zIndex: 5,
     },
     timesButton: {
         position: 'absolute',

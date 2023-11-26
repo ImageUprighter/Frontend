@@ -34,13 +34,26 @@ export const styles = StyleSheet.create({
         fontWeight: '700',
     },
     backgroundImage: {
-        flex: 1, // Take up the entire screen
+        // flex: 1, // Take up the entire screen
         resizeMode: 'cover', // Cover the entire screen while maintaining aspect ratio
         justifyContent: 'center', // Center the top image vertically
         alignItems: 'center', // Center the top image horizontally
-        height: '100%',
+        height: height,
+        top: 0,
+        bottom: 0,
         width: width,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the alpha (last value) for the desired transparency
+        // backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the alpha (last value) for the desired transparency
+    },
+    blurOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        
+        // opacity: 0.8, // Adjust the opacity to simulate the blur effect
+        // backgroundColor: 'rgba(255, 255, 255, 0.8)', // Adjust color and opacity
+
     },
     topImage: {
         flex: 1,

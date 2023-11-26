@@ -1,8 +1,8 @@
 import { PermissionsAndroid, Platform, Alert } from 'react-native';
 
-const proceed = () => {
-    Alert.alert('Access to Gallery has been granted');
-};
+// const proceed = () => {
+//     Alert.alert('Access to Gallery has been granted');
+// };
 
 export const CameraPermissions = async () => {
     if (Platform.OS === 'android') {
@@ -41,7 +41,7 @@ export const StoragePermissions = async () => {
         );
         console.log("granted:   ", granted)
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            proceed()
+            // proceed()
             return granted;
         } else {
             Alert.alert('Access to Read External Storage Denied');
@@ -51,3 +51,8 @@ export const StoragePermissions = async () => {
         return PermissionsAndroid.RESULTS.GRANTED;
     }
 };
+
+export const requestAllPermissions = async () => {
+    await CameraPermissions();
+    await StoragePermissions();
+}

@@ -66,6 +66,7 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
 
                 setSelectedFolderUris(outputString);
                 storeData(directoryKey, outputString)
+                fetchImagesFromDirectory();
             }
         } catch (error) {
             console.error('Error picking folder: ', error);
@@ -82,12 +83,15 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
             if (typeof selectedFolderUris === 'string') {
 
                 const files = await RNFS.readDir(selectedFolderUris)
-                    .then(result => {                   
+                    .then(result => {
+                        console.log('✌️my   result --->', result);
                         result.filter((file) =>
                             file.name.match(/\.(jpg|jpeg|png|gif)$/i)
                         );
                         return result;
                     })
+
+                console.log('✌️files --->', files);
 
                 // Extract image file paths
                 const imagePaths = files.map((file: ImageFile) => file.path);
