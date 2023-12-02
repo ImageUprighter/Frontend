@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Image, SafeAreaView, Text } from 'react-native';
+import { Button, Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { styles } from '../styles/app.style';
 import ImageList from './ImageList';
 import KeepAwake from 'react-native-keep-awake';
@@ -38,7 +38,10 @@ const ImageSlideShow: React.FC<ImageListProps> = ({ navigation }) => {
 
             <SafeAreaView style={styles.HomePageContainer}>
                 <Text style={styles.sectionTitle}>Choose a directory</Text>
-                <Button title="Pick Folder" onPress={() => pickFolder(setSelectedFolderUris)} />
+                <TouchableOpacity onPress={() =>  pickFolder(setSelectedFolderUris)} style={styles.buttonStyle}>
+                    <Text style={styles.textButtonStyle}>Pick Folder</Text>
+                </TouchableOpacity>
+                {/* <Button title="Pick Folder" onPress={() => pickFolder(setSelectedFolderUris)} /> */}
             </SafeAreaView>
     );
 }

@@ -12,12 +12,13 @@ const ImageList: React.FC = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const doublePressThreshold = 300; // Adjust as needed (milliseconds)
     const [lastPressTime, setLastPressTime] = useState(0);
+
     const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, setShuffledImages, toggleSidebar } = useImageSliderContext();
     const { current_timer, animation_timer } = useSettingsContext();
 
     // Use refs for animated values
-    const backgroundOpacity = useRef(new Animated.Value(0)).current;
-    const topImageOpacity = useRef(new Animated.Value(0)).current;
+    const imageOpacity = useRef(new Animated.Value(0)).current;
+
 
     useEffect(() => {
         console.log('✌️"hello" --->', selectedFolderUris);
@@ -75,18 +76,11 @@ const ImageList: React.FC = () => {
 
     const fadeInImages = () => {
         // Reset opacity values to 0
-        backgroundOpacity.setValue(0);
-        topImageOpacity.setValue(0);
+        imageOpacity.setValue(0);
 
         // Start the fade-in animation for both images
         Animated.parallel([
-
-            Animated.timing(topImageOpacity, {
-                toValue: 1,
-                duration: animation_timer * 1000,
-                useNativeDriver: false,
-            }),
-            Animated.timing(backgroundOpacity, {
+            Animated.timing(imageOpacity, {
                 toValue: 1,
                 duration: animation_timer * 1000,
                 useNativeDriver: false,
@@ -101,12 +95,7 @@ const ImageList: React.FC = () => {
         // Start the fade-out animation for both images
         Animated.parallel([
 
-            Animated.timing(topImageOpacity, {
-                toValue: 0,
-                duration: animation_timer * 1000,
-                useNativeDriver: false,
-            }),
-            Animated.timing(backgroundOpacity, {
+            Animated.timing(imageOpacity, {
                 toValue: 0,
                 duration: animation_timer * 1000,
                 useNativeDriver: false,
@@ -130,41 +119,18 @@ const ImageList: React.FC = () => {
     return (
         <TouchableWithoutFeedback onPress={handleViewPress} style={{ width: "100%", height: "100%" }}>
 
-            <Animated.View style={[{ width: '100%', height: '100%' }
-                , { opacity: backgroundOpacity }
-            ]}>
-                {/* <Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
-                    style={[styles.topImage]}
+            <Animated.View style={[{ width: '100%', height: '100%' }, { opacity: imageOpacity }]}>
 
-                /> */}
-                {/* <Animated.Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
-                    style={[styles.backgroundImage, { opacity: backgroundOpacity }]}
-                    blurRadius={10}
-                />
-                <Animated.Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
-                    style={[styles.topImage, { opacity: topImageOpacity }]}
-                /> */}
                 <FastImage
                     source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
                     style={[styles.backgroundImage]}
                     resizeMode='cover'
                 />
-                {/* <Image
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
-                    style={[styles.backgroundImage]}
-                    resizeMode='cover'
-                    blurRadius={10}
-                /> */}
-                {/* <View style={[styles.backgroundImage, styles.blurOverlay]} 
-                /> */}
 
                 <BlurView
                     style={[styles.backgroundImage, styles.blurOverlay]}
-                    blurType="light" // You can adjust the blur type as needed
-                    blurAmount={10}   // You can adjust the blur amount as needed
+                    blurType="light"
+                    blurAmount={10}
                     blurRadius={10}
                 />
                 <FastImage

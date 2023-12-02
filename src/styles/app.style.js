@@ -35,10 +35,10 @@ export const styles = StyleSheet.create({
     },
     backgroundImage: {
         // flex: 1, // Take up the entire screen
-        resizeMode: 'cover', // Cover the entire screen while maintaining aspect ratio
-        justifyContent: 'center', // Center the top image vertically
-        alignItems: 'center', // Center the top image horizontally
-        height: height,
+        // resizeMode: 'cover', // Cover the entire screen while maintaining aspect ratio
+        // justifyContent: 'center', // Center the top image vertically
+        // alignItems: 'center', // Center the top image horizontally
+        height: '100%',
         top: 0,
         bottom: 0,
         width: width,
@@ -65,6 +65,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center', // Center the top image vertically
         alignItems: 'center', // Center the top image horizontally
         top: 0,
+        zIndex:4
     },
 
     buttonStyle: {
