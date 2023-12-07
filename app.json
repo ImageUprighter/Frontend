@@ -1,6 +1,6 @@
 {
   "name": "image_slider",
-  "displayName": "image_slider",
+  "displayName": "Image Slider",
   "expo": {
     "android": {
       "permissions": [
