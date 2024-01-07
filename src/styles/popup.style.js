@@ -26,6 +26,7 @@ export const popupStyle = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,
+        maxHeight: "90%"
     },
     modalText: {
         marginBottom: 20,

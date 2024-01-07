@@ -10,11 +10,12 @@ import { BlurView } from '@react-native-community/blur';
 
 const ImageList: React.FC = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [animationStyle, setAnimationStyle] = useState({});
     const doublePressThreshold = 300; // Adjust as needed (milliseconds)
     const [lastPressTime, setLastPressTime] = useState(0);
 
-    const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, setShuffledImages, toggleSidebar } = useImageSliderContext();
-    const { current_timer, animation_timer } = useSettingsContext();
+    const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, preloadedArray, setShuffledImages, toggleSidebar } = useImageSliderContext();
+    const { current_timer, animation_timer, current_transition } = useSettingsContext();
 
     // Use refs for animated values
     const imageOpacity = useRef(new Animated.Value(0)).current;
@@ -23,11 +24,13 @@ const ImageList: React.FC = () => {
     useEffect(() => {
         console.log('✌️"hello" --->', selectedFolderUris);
         fetchImagesFromDirectory();
-        // await pickFile();
+        // setAnimationStyle(")
     }, [selectedFolderUris]);
 
 
     useEffect(() => {
+
+        console.log('✌️shuffledImages --->', shuffledImages);
         if (shuffledImages.length > 0) {
             fadeInImages();
             const interval = setInterval(() => {
@@ -46,15 +49,23 @@ const ImageList: React.FC = () => {
 
 
     useEffect(() => {
-        if (currentImageIndex === 0) {
+        if (currentImageIndex === 0
+            // && preloadedArray.length == imagePaths.length
+        ) {
             // If we've reached the end of the images, shuffle the array
+            // shuffleArray();
+            console.log('✌️imagePaths --->', imagePaths);
             shuffleArray(imagePaths);
         }
-    }, [currentImageIndex, imagePaths]);
+    }, [currentImageIndex, imagePaths
+        // , preloadedArray
+    ]);
 
+    // const shuffleArray = (array:string[]) => {
     const shuffleArray = (array: string[]) => {
         // Create a copy of the original array
         const shuffledArray = [...array];
+        // const shuffledArray = [...shuffledImages];
         let currentIndex = shuffledArray.length;
         let randomIndex, tempValue;
 
@@ -119,12 +130,14 @@ const ImageList: React.FC = () => {
     return (
         <TouchableWithoutFeedback onPress={handleViewPress} style={{ width: "100%", height: "100%" }}>
 
-            <Animated.View style={[{ width: '100%', height: '100%' }, { opacity: imageOpacity }]}>
+            <Animated.View style={[{ width: '100%', height: '100%' }, { opacity: !current_transition || current_transition != "no_animation" ? imageOpacity : 1 }]}>
 
                 <FastImage
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    source={{ uri: shuffledImages[currentImageIndex], priority: FastImage.priority.high, }}
+                    // source={{ uri: imagePaths[shuffledImages[currentImageIndex]] }}
                     style={[styles.backgroundImage]}
-                    resizeMode='cover'
+                    resizeMode={FastImage.resizeMode.cover}
+
                 />
 
                 <BlurView
@@ -134,9 +147,10 @@ const ImageList: React.FC = () => {
                     blurRadius={10}
                 />
                 <FastImage
-                    source={{ uri: 'file://' + shuffledImages[currentImageIndex] }}
+                    source={{ uri: shuffledImages[currentImageIndex] }}
+                    // source={{ uri: imagePaths[shuffledImages[currentImageIndex]] }}
                     style={[styles.topImage]}
-                    resizeMode="contain"
+                    resizeMode={FastImage.resizeMode.contain}
                 />
             </Animated.View>
         </TouchableWithoutFeedback>

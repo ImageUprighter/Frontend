@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Text, FlatList, Pressable, View, TouchableOpacity, Image } from 'react-native';
 import { popupStyle } from '../styles/popup.style';
-import { currentTimerKey, AnimationTimerKey } from '../consts/Key.const'
+import { currentTimerKey, AnimationTimerKey, displayEffectKey } from '../consts/Key.const'
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
 
@@ -36,6 +36,10 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
             else if (title === "Animation Time") {
                 setCurrentKey(AnimationTimerKey)
                 given_data = await retrieveData(AnimationTimerKey);
+            }
+            else if (title === "Transition Effect") {
+                setCurrentKey(displayEffectKey)
+                given_data = await retrieveData(displayEffectKey);
             }
             if (given_data !== null && data !== null) {
                 const my_data_index: number = data.findIndex((element: DataOption) => {
@@ -81,9 +85,9 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
             else if (title === "Animation Time") {
                 setAnimationTimer(selectedItem.value)
             }
-            // else if (title === "Transition Effect") {
-            //     setCurrentTransition(selectedItem.value)
-            // }
+            else if (title === "Transition Effect") {
+                setCurrentTransition(selectedItem.value)
+            }
             // else if (title === "Display Effect") {
             //     setDisplayEffect(selectedItem.value)
             // }

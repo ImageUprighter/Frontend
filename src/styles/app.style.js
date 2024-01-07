@@ -42,6 +42,7 @@ export const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         width: width,
+        zIndex: 1
         // backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the alpha (last value) for the desired transparency
     },
     blurOverlay: {
@@ -50,7 +51,7 @@ export const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        
+        zIndex:2
         // opacity: 0.8, // Adjust the opacity to simulate the blur effect
         // backgroundColor: 'rgba(255, 255, 255, 0.8)', // Adjust color and opacity
 
@@ -65,7 +66,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center', // Center the top image vertically
         alignItems: 'center', // Center the top image horizontally
         top: 0,
-        zIndex:4
+        zIndex: 3
     },
 
     buttonStyle: {

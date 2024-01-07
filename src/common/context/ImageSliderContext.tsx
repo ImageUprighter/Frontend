@@ -4,6 +4,7 @@ import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
 import { directoryKey } from '../../consts/Key.const'
+import { Image } from 'react-native';
 
 
 interface ImageSliderContextValue {
@@ -11,9 +12,13 @@ interface ImageSliderContextValue {
     isSidebarOpen: boolean;
     imagePaths: string[];
     shuffledImages: string[];
+    // shuffledImages: number[];
+    preloadedArray: string[];
+    setPreLoadedArray: (value: string[]) => void;
     setSelectedFolderUris: (value: string | null) => void;
     setIsSidebarOpen: (value: boolean) => void;
     setImagePaths: (value: string[]) => void;
+    // setShuffledImages: (value: number[]) => void;
     setShuffledImages: (value: string[]) => void;
     retrieveData: (storeKey: string) => Promise<string | null>;
     storeData: (storeKey: string, value: string) => void;
@@ -28,8 +33,10 @@ export const useImageSliderContext = () => useContext(ImageSliderContext)!;
 
 export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     const [selectedFolderUris, setSelectedFolderUris] = useState<string | null>(null);
+    const [preloadedArray, setPreLoadedArray] = useState<string[]>([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [imagePaths, setImagePaths] = useState<string[]>([]);
+    // const [shuffledImages, setShuffledImages] = useState<number[]>([]);
     const [shuffledImages, setShuffledImages] = useState<string[]>([]);
 
 
@@ -54,6 +61,42 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
         }
     }
 
+    // const [currentIndex, setCurrentIndex] = useState(0);
+    // const batchSize = 10; // Number of images to preload at a time
+
+    // useEffect(() => {
+    //     const preloadBatch = async () => {
+    //         const endIndex = Math.min(currentIndex + batchSize, imagePaths.length);
+    //         const batchURIs = imagePaths.slice(currentIndex, endIndex);
+
+    //         const promises = batchURIs.map(uri => {
+    //             return Image.prefetch(uri);
+    //         });
+
+    //         try {
+    //             await Promise.all(promises);
+    //             setPreLoadedArray(prevImages => [...prevImages, ...batchURIs]);
+
+    //             console.log(`Images ${currentIndex + 1}-${endIndex} preloaded successfully!`);
+
+    //             if (endIndex < imagePaths.length) {
+    //                 setCurrentIndex(endIndex); // Move to the next batch
+    //             }
+    //         } catch (error) {
+    //             console.error('Error preloading images:', error);
+    //             // Handle errors if any while preloading images
+    //         }
+    //     };
+
+    //     if (currentIndex < imagePaths.length) {
+    //         preloadBatch();
+    //     }
+    //     // else{
+    //     //     setShuffledImages(imagePaths)
+    //     // }
+    // }, [imagePaths, currentIndex]);
+
+
     async function pickFolder(updateSelectedFolderUris: any) {
         try {
             const result = await DocumentPicker.pickDirectory({});
@@ -76,13 +119,12 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
 
     async function fetchImagesFromDirectory() {
         try {
+            const curr_data = await retrieveData(directoryKey)
+            setSelectedFolderUris(curr_data);
+            if (typeof curr_data === 'string') {
+                console.log('✌️curr_data --->', curr_data);
 
-            if (typeof selectedFolderUris !== 'string') {
-                setSelectedFolderUris(await retrieveData(directoryKey));
-            }
-            if (typeof selectedFolderUris === 'string') {
-
-                const files = await RNFS.readDir(selectedFolderUris)
+                const files = await RNFS.readDir(curr_data)
                     .then(result => {
                         console.log('✌️my   result --->', result);
                         result.filter((file) =>
@@ -94,9 +136,11 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
                 console.log('✌️files --->', files);
 
                 // Extract image file paths
-                const imagePaths = files.map((file: ImageFile) => file.path);
+                const imagePaths = files.map((file: ImageFile) => 'file://' + file.path);
                 setImagePaths(imagePaths);
-                setShuffledImages(imagePaths);
+                // setShuffledImages(Array.from(Array(imagePaths.length).keys()));
+                setShuffledImages(imagePaths)
+
             }
         } catch (error) {
             console.error('Error reading directory:', error);
@@ -112,6 +156,8 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
         isSidebarOpen,
         imagePaths,
         shuffledImages,
+        preloadedArray,
+        setPreLoadedArray,
         setSelectedFolderUris,
         setIsSidebarOpen,
         setImagePaths,

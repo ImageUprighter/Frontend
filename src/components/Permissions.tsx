@@ -15,7 +15,7 @@ export const CameraPermissions = async () => {
                 buttonNegative: 'Cancel',
             }
         );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        if (granted === PermissionsAndroid.RESULTS.GRANTED || granted == "never_ask_again") {
             // proceed()
             return granted;
         } else {
@@ -40,7 +40,7 @@ export const StoragePermissions = async () => {
             }
         );
         console.log("granted:   ", granted)
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        if (granted === PermissionsAndroid.RESULTS.GRANTED || granted == "never_ask_again") {
             // proceed()
             return granted;
         } else {

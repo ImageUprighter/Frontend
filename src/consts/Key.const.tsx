@@ -44,7 +44,8 @@ export const displayEffectData = [
 ]
 
 export const TransitionEffectData = [
-    { display: 'Random', value: 'Random' },
+    { display: 'No Animation', value: 'no_animation' },
+    // { display: 'Random', value: 'Random' },
     { display: 'Fade', value: 'Fade' },
     { display: 'Cross Fade', value: 'Cross_Fade' },
     { display: 'Memory', value: 'Memory' },
