@@ -12,8 +12,7 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
-    const { retrieveData, setSelectedFolderUris, selectedFolderUris, isSidebarOpen, pickFolder } = useImageSliderContext();
-    const { update_all_data } = useSettingsContext();
+    const { retrieveData } = useImageSliderContext();
 
     useEffect(() => {
         (async () => {

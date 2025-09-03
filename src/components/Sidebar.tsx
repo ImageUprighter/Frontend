@@ -1,6 +1,6 @@
 // Sidebar.js
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { sidebarStyle } from '../styles/Sidebar.style'
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
@@ -12,10 +12,17 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
 
-    const { fetchImagesFromDirectory, toggleSidebar, pickFolder, setSelectedFolderUris } = useImageSliderContext();
+    const { fetchImagesFromDirectory, toggleSidebar, pickFolder } = useImageSliderContext();
+
+    useEffect(() => {
+        setTimeout(() => {
+            toggleSidebar();
+        }, 1000 * 60 * 1)
+    }, []) // 3 minutes
 
     const ReloadData = async () => {
         await fetchImagesFromDirectory();
+        
     }
 
     return (
@@ -44,8 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
 
                 <View style={sidebarStyle.line}></View>
 
-                {/* check if it is working!!! */}
-                <TouchableOpacity style={sidebarStyle.categoryButton} onPress={() => pickFolder(setSelectedFolderUris)}>
+                <TouchableOpacity style={sidebarStyle.categoryButton} onPress={() => pickFolder()}>
                     <Text style={sidebarStyle.closeButton}>Choose a directory</Text>
                 </TouchableOpacity>
 

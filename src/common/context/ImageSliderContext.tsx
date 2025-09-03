@@ -4,7 +4,6 @@ import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
 import { directoryKey } from '../../consts/Key.const'
-import { Image } from 'react-native';
 
 
 interface ImageSliderContextValue {
@@ -22,7 +21,8 @@ interface ImageSliderContextValue {
     setShuffledImages: (value: string[]) => void;
     retrieveData: (storeKey: string) => Promise<string | null>;
     storeData: (storeKey: string, value: string) => void;
-    pickFolder: (updateSelectedFolderUris: any) => void;
+    // pickFolder: (url?: string) => string | null;
+    pickFolder: (url?: string | null) => Promise<string | null | undefined> | string | null | undefined;
     fetchImagesFromDirectory: () => void;
     toggleSidebar: () => void;
 }
@@ -61,56 +61,21 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
         }
     }
 
-    // const [currentIndex, setCurrentIndex] = useState(0);
-    // const batchSize = 10; // Number of images to preload at a time
-
-    // useEffect(() => {
-    //     const preloadBatch = async () => {
-    //         const endIndex = Math.min(currentIndex + batchSize, imagePaths.length);
-    //         const batchURIs = imagePaths.slice(currentIndex, endIndex);
-
-    //         const promises = batchURIs.map(uri => {
-    //             return Image.prefetch(uri);
-    //         });
-
-    //         try {
-    //             await Promise.all(promises);
-    //             setPreLoadedArray(prevImages => [...prevImages, ...batchURIs]);
-
-    //             console.log(`Images ${currentIndex + 1}-${endIndex} preloaded successfully!`);
-
-    //             if (endIndex < imagePaths.length) {
-    //                 setCurrentIndex(endIndex); // Move to the next batch
-    //             }
-    //         } catch (error) {
-    //             console.error('Error preloading images:', error);
-    //             // Handle errors if any while preloading images
-    //         }
-    //     };
-
-    //     if (currentIndex < imagePaths.length) {
-    //         preloadBatch();
-    //     }
-    //     // else{
-    //     //     setShuffledImages(imagePaths)
-    //     // }
-    // }, [imagePaths, currentIndex]);
-
-
-    async function pickFolder(updateSelectedFolderUris: any) {
+    async function pickFolder(url: string | null = null) {
         try {
-            const result = await DocumentPicker.pickDirectory({});
+            const result = url ? { uri: url } : await DocumentPicker.pickDirectory({});
+            // const result = await DocumentPicker.pickDirectory({});
 
             if (result != null) {
-                console.log('✌️result --->', result);
                 const outputString = RNFS.ExternalStorageDirectoryPath + "/" + decodeURIComponent(result.uri).split("primary")[1].split(':')[1]
-                console.log('✌️outputString --->', outputString);
-                updateSelectedFolderUris(outputString);
+                // updateSelectedFolderUris(outputString);
 
                 setSelectedFolderUris(outputString);
                 storeData(directoryKey, outputString)
                 fetchImagesFromDirectory();
+                return outputString;
             }
+            return null;
         } catch (error) {
             console.error('Error picking folder: ', error);
         }
@@ -122,18 +87,14 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
             const curr_data = await retrieveData(directoryKey)
             setSelectedFolderUris(curr_data);
             if (typeof curr_data === 'string') {
-                console.log('✌️curr_data --->', curr_data);
 
                 const files = await RNFS.readDir(curr_data)
                     .then(result => {
-                        console.log('✌️my   result --->', result);
                         result.filter((file) =>
                             file.name.match(/\.(jpg|jpeg|png|gif)$/i)
                         );
                         return result;
                     })
-
-                console.log('✌️files --->', files);
 
                 // Extract image file paths
                 const imagePaths = files.map((file: ImageFile) => 'file://' + file.path);

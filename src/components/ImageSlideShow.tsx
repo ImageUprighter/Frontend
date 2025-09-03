@@ -38,7 +38,8 @@ const ImageSlideShow: React.FC<ImageListProps> = ({ navigation }) => {
 
             <SafeAreaView style={styles.HomePageContainer}>
                 <Text style={styles.sectionTitle}>Choose a directory</Text>
-                <TouchableOpacity onPress={() =>  pickFolder(setSelectedFolderUris)} style={styles.buttonStyle}>
+                <TouchableOpacity onPress={() =>  pickFolder()} style={styles.buttonStyle}>
+
                     <Text style={styles.textButtonStyle}>Pick Folder</Text>
                 </TouchableOpacity>
                 {/* <Button title="Pick Folder" onPress={() => pickFolder(setSelectedFolderUris)} /> */}

@@ -17,12 +17,12 @@ const ImageList: React.FC = () => {
     const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, preloadedArray, setShuffledImages, toggleSidebar } = useImageSliderContext();
     const { current_timer, animation_timer, current_transition } = useSettingsContext();
 
+    //TODO: Fix animation time - when the time is too long it make the app stuck!!!!
     // Use refs for animated values
     const imageOpacity = useRef(new Animated.Value(0)).current;
 
 
     useEffect(() => {
-        console.log('✌️"hello" --->', selectedFolderUris);
         fetchImagesFromDirectory();
         // setAnimationStyle(")
     }, [selectedFolderUris]);
@@ -30,7 +30,6 @@ const ImageList: React.FC = () => {
 
     useEffect(() => {
 
-        console.log('✌️shuffledImages --->', shuffledImages);
         if (shuffledImages.length > 0) {
             fadeInImages();
             const interval = setInterval(() => {
@@ -54,7 +53,6 @@ const ImageList: React.FC = () => {
         ) {
             // If we've reached the end of the images, shuffle the array
             // shuffleArray();
-            console.log('✌️imagePaths --->', imagePaths);
             shuffleArray(imagePaths);
         }
     }, [currentImageIndex, imagePaths
@@ -131,7 +129,6 @@ const ImageList: React.FC = () => {
         <TouchableWithoutFeedback onPress={handleViewPress} style={{ width: "100%", height: "100%" }}>
 
             <Animated.View style={[{ width: '100%', height: '100%' }, { opacity: !current_transition || current_transition != "no_animation" ? imageOpacity : 1 }]}>
-
                 <FastImage
                     source={{ uri: shuffledImages[currentImageIndex], priority: FastImage.priority.high, }}
                     // source={{ uri: imagePaths[shuffledImages[currentImageIndex]] }}

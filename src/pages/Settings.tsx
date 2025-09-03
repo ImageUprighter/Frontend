@@ -5,6 +5,9 @@ import { styles } from '../styles/app.style';
 import PopupWithSelectOptions from '../components/PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
+import { rotateImages } from '../api/service';
+import { useSettingsContext } from '../common/context/SettingsContext';
+import { useImageSliderContext } from '../common/context/ImageSliderContext';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 interface SettingsProps {
@@ -19,10 +22,27 @@ interface DataOption {
 const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     const [modalData, setModalData] = useState<DataOption[] | null>(null);
     const [modalTitle, setModalTitle] = useState<string | null>(null);
+    const { pickFolder, selectedFolderUris } = useImageSliderContext();
 
     function updateData(title: string, data: DataOption[]) {
         setModalData(data);
         setModalTitle(title)
+    }
+
+    async function rotateImagesFunc() {
+        try{
+            let dir = selectedFolderUris;
+            if (!dir) {
+                dir = (await pickFolder()) ?? null;
+            }
+            const data = await rotateImages(dir);
+            console.log(data)
+            await pickFolder(data.url || null);
+        } catch (error) {
+            console.error("Error rotating images:", error);
+        }
+
+
     }
 
     return (
@@ -52,6 +72,10 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
                     <Text style={styles.textButtonStyle}>Transition Effect</Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity onPress={() => rotateImagesFunc()} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>Rotate Images</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity onPress={() => updateData("Display Effect Data", displayEffectData)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>Display Effect Data</Text>
                 </TouchableOpacity>
@@ -65,18 +89,6 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
                     customData={true}
                     setModalTitle={setModalTitle}
                     title={modalTitle} />
-
-
-                {/* <View>
-                <Text>Choose </Text>
-                <TouchableOpacity onPress={() => navigateTo("Settings")} style={styles.buttonStyle}>
-                <Text style={styles.textButtonStyle}>Go To Settings</Text>
-                </TouchableOpacity>
-                </View>
-                <TouchableOpacity onPress={() => navigateTo("ImageSlideShow")} style={styles.buttonStyle}>
-                <Text style={styles.textButtonStyle}>Show Image Slide Show</Text>
-            </TouchableOpacity> */}
-
             </View>
         </ScrollView>
     );
