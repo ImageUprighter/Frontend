@@ -1,69 +1,46 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, TouchableWithoutFeedback, Animated, Image } from 'react-native';
+import { View, TouchableWithoutFeedback, Animated, Image, StyleSheet } from 'react-native';
 import { styles } from '../styles/app.style';
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
-import DocumentPicker from 'react-native-document-picker';
-import FastImage from 'react-native-fast-image';
-import { BlurView } from '@react-native-community/blur';
-
 
 const ImageList: React.FC = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [animationStyle, setAnimationStyle] = useState({});
-    const doublePressThreshold = 300; // Adjust as needed (milliseconds)
+    const doublePressThreshold = 300;
     const [lastPressTime, setLastPressTime] = useState(0);
 
-    const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, preloadedArray, setShuffledImages, toggleSidebar } = useImageSliderContext();
+    const { fetchImagesFromDirectory, selectedFolderUris, shuffledImages, imagePaths, setShuffledImages, toggleSidebar } = useImageSliderContext();
     const { current_timer, animation_timer, current_transition } = useSettingsContext();
 
-    //TODO: Fix animation time - when the time is too long it make the app stuck!!!!
-    // Use refs for animated values
     const imageOpacity = useRef(new Animated.Value(0)).current;
-
 
     useEffect(() => {
         fetchImagesFromDirectory();
-        // setAnimationStyle(")
     }, [selectedFolderUris]);
 
-
     useEffect(() => {
-
         if (shuffledImages.length > 0) {
             fadeInImages();
             const interval = setInterval(() => {
-                // Increment the image index or reset to 0 if it reaches the end
                 setCurrentImageIndex((prevIndex) =>
                     prevIndex === shuffledImages.length - 1 ? 0 : prevIndex + 1
                 );
-
-                // Start the fade-in animation for both images
                 fadeInImages();
-            }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2)); // 5000 milliseconds = 5 seconds
+            }, (Number(current_timer) * 1000) + ((Number(animation_timer) * 1000) * 2));
 
-            return () => clearInterval(interval); // Cleanup the interval when the component unmounts
+            return () => clearInterval(interval);
         }
     }, [shuffledImages]);
 
-
     useEffect(() => {
-        if (currentImageIndex === 0
-            // && preloadedArray.length == imagePaths.length
-        ) {
-            // If we've reached the end of the images, shuffle the array
-            // shuffleArray();
+        if (currentImageIndex === 0 && imagePaths.length > 0) {
             shuffleArray(imagePaths);
         }
-    }, [currentImageIndex, imagePaths
-        // , preloadedArray
-    ]);
+    }, [currentImageIndex, imagePaths]);
 
     // const shuffleArray = (array:string[]) => {
     const shuffleArray = (array: string[]) => {
-        // Create a copy of the original array
         const shuffledArray = [...array];
-        // const shuffledArray = [...shuffledImages];
         let currentIndex = shuffledArray.length;
         let randomIndex, tempValue;
 
@@ -72,19 +49,14 @@ const ImageList: React.FC = () => {
             // Pick a remaining element...
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
-
-            // And swap it with the current element.
             tempValue = shuffledArray[currentIndex];
             shuffledArray[currentIndex] = shuffledArray[randomIndex];
             shuffledArray[randomIndex] = tempValue;
         }
-
         setShuffledImages(shuffledArray);
     };
 
-
     const fadeInImages = () => {
-        // Reset opacity values to 0
         imageOpacity.setValue(0);
 
         // Start the fade-in animation for both images
@@ -99,7 +71,6 @@ const ImageList: React.FC = () => {
         });
     };
 
-
     const fadeOutImages = () => {
         // Start the fade-out animation for both images
         Animated.parallel([
@@ -112,46 +83,47 @@ const ImageList: React.FC = () => {
         ]).start();
     };
 
-
     const handleViewPress = () => {
         const currentTime = Date.now();
         const timeSinceLastPress = currentTime - lastPressTime;
-
         if (timeSinceLastPress < doublePressThreshold) {
             // Double press detected
             toggleSidebar();
         }
-
         setLastPressTime(currentTime);
     };
 
+    const currentUri = shuffledImages[currentImageIndex];
+
     return (
-        <TouchableWithoutFeedback onPress={handleViewPress} style={{ width: "100%", height: "100%" }}>
+        <TouchableWithoutFeedback onPress={handleViewPress}>
+            <View style={{ flex: 1 }}>
+                <Animated.View
+                    style={[
+                        { flex: 1 },
+                        { opacity: !current_transition || current_transition !== "no_animation" ? imageOpacity : 1 }
+                    ]}
+                >
+                    {/* BACKGROUND BLURRED IMAGE (Replaces BlurView) */}
+                    <Image
+                        source={{ uri: currentUri }}
+                        style={[StyleSheet.absoluteFill, styles.backgroundImage]}
+                        resizeMode="cover"
+                        blurRadius={15} // Adjust this number for blur intensity
+                    />
 
-            <Animated.View style={[{ width: '100%', height: '100%' }, { opacity: !current_transition || current_transition != "no_animation" ? imageOpacity : 1 }]}>
-                <FastImage
-                    source={{ uri: shuffledImages[currentImageIndex], priority: FastImage.priority.high, }}
-                    // source={{ uri: imagePaths[shuffledImages[currentImageIndex]] }}
-                    style={[styles.backgroundImage]}
-                    resizeMode={FastImage.resizeMode.cover}
+                    {/* OPTIONAL LIGHT OVERLAY (To mimic "light" blurType) */}
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255,255,255,0.1)' }]} />
 
-                />
-
-                <BlurView
-                    style={[styles.backgroundImage, styles.blurOverlay]}
-                    blurType="light"
-                    blurAmount={10}
-                    blurRadius={10}
-                />
-                <FastImage
-                    source={{ uri: shuffledImages[currentImageIndex] }}
-                    // source={{ uri: imagePaths[shuffledImages[currentImageIndex]] }}
-                    style={[styles.topImage]}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
-            </Animated.View>
+                    {/* FOREGROUND IMAGE */}
+                    <Image
+                        source={{ uri: currentUri }}
+                        style={[StyleSheet.absoluteFill, styles.topImage]}
+                        resizeMode="contain"
+                    />
+                </Animated.View>
+            </View>
         </TouchableWithoutFeedback>
-
     );
 };
 

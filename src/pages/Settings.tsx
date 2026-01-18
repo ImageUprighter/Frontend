@@ -6,9 +6,7 @@ import PopupWithSelectOptions from '../components/PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
 import { rotateImages } from '../api/service';
-import { useSettingsContext } from '../common/context/SettingsContext';
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
-// import { ScrollView } from 'react-native-gesture-handler';
 
 interface SettingsProps {
     navigation: any; // Replace 'any' with the appropriate navigation type

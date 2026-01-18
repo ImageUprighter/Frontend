@@ -17,6 +17,7 @@ interface ImageSliderContextValue {
     setSelectedFolderUris: (value: string | null) => void;
     setIsSidebarOpen: (value: boolean) => void;
     setImagePaths: (value: string[]) => void;
+    fetchImagesFromDirectoryCheck: () => void;
     // setShuffledImages: (value: number[]) => void;
     setShuffledImages: (value: string[]) => void;
     retrieveData: (storeKey: string) => Promise<string | null>;
@@ -82,6 +83,11 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
     };
 
 
+    async function fetchImagesFromDirectoryCheck() {
+        if (!selectedFolderUris || selectedFolderUris?.length <= 0) {
+            await fetchImagesFromDirectory();
+        }
+    }
     async function fetchImagesFromDirectory() {
         try {
             const curr_data = await retrieveData(directoryKey)
@@ -120,6 +126,7 @@ export const ImageSliderProvider: FC<{ children: React.ReactNode }> = ({ childre
         preloadedArray,
         setPreLoadedArray,
         setSelectedFolderUris,
+        fetchImagesFromDirectoryCheck,
         setIsSidebarOpen,
         setImagePaths,
         setShuffledImages,
