@@ -5,6 +5,8 @@ import { styles } from '../styles/app.style';
 import PopupWithSelectOptions from '../components/PopupWithSelect';
 import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
+import { handleStartProcess } from '../faceDetection/onnxConnection';
+import { useImageSliderContext } from '../common/context/ImageSliderContext';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 interface SettingsProps {
@@ -19,6 +21,7 @@ interface DataOption {
 const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     const [modalData, setModalData] = useState<DataOption[] | null>(null);
     const [modalTitle, setModalTitle] = useState<string | null>(null);
+    const { fetchImagesFromDirectoryCheck, imagePaths } = useImageSliderContext();
 
     function updateData(title: string, data: DataOption[]) {
         setModalData(data);
@@ -55,14 +58,16 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
                 <TouchableOpacity onPress={() => updateData("Display Effect Data", displayEffectData)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>Display Effect Data</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity onPress={() => updateData("Photo Order Data", PhotoOrderData)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>Photo Order Data</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleStartProcess(fetchImagesFromDirectoryCheck, imagePaths)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>AI Algorithm</Text>
+                </TouchableOpacity>
+
 
 
                 <PopupWithSelectOptions data={modalData} setModalData={setModalData}
-                    customData={true}
                     setModalTitle={setModalTitle}
                     title={modalTitle} />
 
