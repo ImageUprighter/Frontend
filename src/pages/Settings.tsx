@@ -7,6 +7,7 @@ import { sidebarStyle } from '../styles/Sidebar.style';
 import { displayEffectData, displayTimeData, animationTimeData, TransitionEffectData, PhotoOrderData } from '../consts/Key.const'
 import { handleStartProcess } from '../faceDetection/onnxConnection';
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
+import PopupAI from '../components/PopupAI';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 interface SettingsProps {
@@ -21,6 +22,7 @@ interface DataOption {
 const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     const [modalData, setModalData] = useState<DataOption[] | null>(null);
     const [modalTitle, setModalTitle] = useState<string | null>(null);
+    const [openAI, setOpenAI] = useState<boolean>(false);
     const { fetchImagesFromDirectoryCheck, imagePaths } = useImageSliderContext();
 
     function updateData(title: string, data: DataOption[]) {
@@ -61,7 +63,10 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
                 <TouchableOpacity onPress={() => updateData("Photo Order Data", PhotoOrderData)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>Photo Order Data</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleStartProcess(fetchImagesFromDirectoryCheck, imagePaths)} style={[styles.item, styles.sectionItem]}>
+                {/* <TouchableOpacity onPress={() => handleStartProcess(fetchImagesFromDirectoryCheck, imagePaths)} style={[styles.item, styles.sectionItem]}>
+                    <Text style={styles.textButtonStyle}>AI Algorithm</Text>
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={() => setOpenAI(true)} style={[styles.item, styles.sectionItem]}>
                     <Text style={styles.textButtonStyle}>AI Algorithm</Text>
                 </TouchableOpacity>
 
@@ -70,6 +75,7 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
                 <PopupWithSelectOptions data={modalData} setModalData={setModalData}
                     setModalTitle={setModalTitle}
                     title={modalTitle} />
+                <PopupAI openModal={openAI} setOpenModal={setOpenAI}/>
 
 
                 {/* <View>

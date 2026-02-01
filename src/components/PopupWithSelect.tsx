@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Text, FlatList, Pressable, View, TouchableOpacity, Image } from 'react-native';
+import { Text, FlatList, TouchableOpacity, View, Pressable } from 'react-native';
 import { popupStyle } from '../styles/popup.style';
 import { currentTimerKey, AnimationTimerKey, displayEffectKey } from '../consts/Key.const'
 import { useImageSliderContext } from '../common/context/ImageSliderContext';
 import { useSettingsContext } from '../common/context/SettingsContext';
+import Popup from './Popup';
 
 interface DataOption {
     display: string;
@@ -13,17 +14,16 @@ interface DataOption {
 interface SingleSelectFlatListProps {
     data: DataOption[] | null;
     title: string | null;
-    customData: boolean;
     setModalData: any;
     setModalTitle: any;
 }
 
-const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, title, customData, setModalData, setModalTitle }) => {
+const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, title, setModalData, setModalTitle }) => {
     const [selectedItem, setSelectedItem] = useState<DataOption | null>(null);
     const [currentKey, setCurrentKey] = useState<string | null>(null);
     const [changed, setChanged] = useState<boolean>(false);
     const { retrieveData, storeData } = useImageSliderContext();
-    const { setCurrentTimer, setAnimationTimer, setCurrentTransition, setDisplayEffect, setPhotoOrder } = useSettingsContext();
+    const { setCurrentTimer, setAnimationTimer, setCurrentTransition } = useSettingsContext();
 
 
     useEffect(() => {
@@ -100,35 +100,27 @@ const PopupWithSelectOptions: React.FC<SingleSelectFlatListProps> = ({ data, tit
     }
 
     return (
-        <View style={popupStyle.container}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={data !== null && title !== null}
-                onRequestClose={closeModal}>
-                <View style={popupStyle.modalBackground}>
-                    <View style={popupStyle.modalContent}>
-                        <TouchableOpacity onPress={closeModal} style={popupStyle.timesButton}>
-                            <Image source={require('../../assets/my_close.png')} style={{ width: 30, height: 30 }} />
-                        </TouchableOpacity>
-                        <Text style={popupStyle.modalText}>Change {title}</Text>
-                        <FlatList
-                            data={data}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.value.toString()} // Use the 'value' property as the key
-                            extraData={selectedItem} // Re-render the list when the selectedItem changes
-                        />
-                        <View style={{ width: '100%', alignItems: 'center' }}>
+        <>
+            <Popup visible={data !== null && title !== null} title={`Change ${title}`} children={
 
-                            <Pressable disabled={!changed}
-                                style={[popupStyle.closeModalButton, !changed ? popupStyle.disabledButton : null]} onPress={saveModal}>
-                                <Text style={popupStyle.textStyle}>Save</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-        </View>
+                <>
+                    <FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.value.toString()} // Use the 'value' property as the key
+                        extraData={selectedItem} // Re-render the list when the selectedItem changes
+                    />
+                    {/* <View style={{ width: '100%', alignItems: 'center' }}>
+                        <Pressable disabled={!changed}
+                            style={[popupStyle.closeModalButton, !changed ? popupStyle.disabledButton : null]} onPress={saveModal}>
+                            <Text style={popupStyle.textStyle}>{'Save'}</Text>
+                        </Pressable>
+                    </View> */}
+                </>
+            } closeModal={closeModal} saveModal={saveModal} changed={changed} buttonTitle="Save" />
+
+        </>
+
     );
 };
 
